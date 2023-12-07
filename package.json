@@ -1,0 +1,26 @@
+{
+  "name": "model",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "@types/three": "^0.159.0",
+    "nuxt": "^3.8.2",
+    "vue": "^3.3.10",
+    "vue-router": "^4.2.5"
+  },
+  "dependencies": {
+    "@nuxtjs/tailwindcss": "^6.10.1",
+    "@vueuse/components": "^10.7.0",
+    "@vueuse/core": "^10.7.0",
+    "@vueuse/nuxt": "^10.7.0",
+    "three": "^0.159.0"
+  }
+}
