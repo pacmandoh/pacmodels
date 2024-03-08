@@ -12,15 +12,14 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@types/three": "^0.159.0",
-    "nuxt": "^3.8.2",
-    "vue": "^3.3.10",
-    "vue-router": "^4.2.5"
+    "nuxt": "^3.10.3",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0"
   },
   "dependencies": {
-    "@nuxtjs/tailwindcss": "^6.10.1",
-    "@vueuse/components": "^10.7.0",
-    "@vueuse/core": "^10.7.0",
-    "@vueuse/nuxt": "^10.7.0",
+    "@vueuse/components": "^10.9.0",
+    "@vueuse/core": "^10.9.0",
+    "@vueuse/nuxt": "^10.9.0",
     "three": "^0.159.0"
   }
 }
