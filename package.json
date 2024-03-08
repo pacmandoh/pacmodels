@@ -14,7 +14,10 @@
     "@types/three": "^0.159.0",
     "nuxt": "^3.10.3",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "vue-tsc": "^2.0.5",
+    "@nuxt/eslint-config": "^0.2.0",
+    "eslint": "^8.57.0"
   },
   "dependencies": {
     "@vueuse/components": "^10.9.0",
