@@ -11,19 +11,19 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "@types/three": "^0.159.0",
+    "@nuxt/eslint-config": "^0.2.0",
+    "@types/three": "^0.162.0",
+    "eslint": "^8.57.0",
     "nuxt": "^3.10.3",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
-    "vue-tsc": "^2.0.5",
-    "@nuxt/eslint-config": "^0.2.0",
-    "eslint": "^8.57.0"
+    "vue-tsc": "^2.0.6"
   },
   "dependencies": {
-    "@nuxtjs/tailwindcss": "^6.10.1",
+    "@nuxtjs/tailwindcss": "^6.11.4",
     "@vueuse/components": "^10.9.0",
     "@vueuse/core": "^10.9.0",
     "@vueuse/nuxt": "^10.9.0",
-    "three": "^0.159.0"
+    "three": "^0.162.0"
   }
 }
