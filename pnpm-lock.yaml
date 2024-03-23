@@ -8,9 +8,6 @@ dependencies:
   '@nuxt/ui':
     specifier: ^2.14.2
     version: 2.14.2(nuxt@3.11.1)(vite@5.2.4)(vue@3.4.21)
-  '@nuxtjs/tailwindcss':
-    specifier: ^6.11.4
-    version: 6.11.4
   '@vueuse/components':
     specifier: ^10.9.0
     version: 10.9.0(vue@3.4.21)
