@@ -17,7 +17,7 @@ export const useDropdown = () => {
       icon: 'i-ph-engine-duotone',
       target: '_top',
       to: `/?model=${modelName}`,
-      disabled: route.query.model === modelName
+      disabled: route.query.model ? route.query.model === modelName : modelName === 'duramax' ? true : false
     }
 
     dropdownItems[0].unshift(dropdownItem)
