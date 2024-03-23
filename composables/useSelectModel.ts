@@ -29,7 +29,8 @@ export const useSelectModel = () => {
     bugattiW16: {
       cosModelName: 'bugattiW16-draco.glb',
       cameraOffset: 2,
-      cameraLock: [0, 1, 0]
+      cameraLock: [0, 1, 0],
+      rotationAxis: 'y'
     },
     chevroletCorvetteV8: {
       cosModelName: 'chevroletCorvetteV8-draco.glb',
@@ -47,7 +48,8 @@ export const useSelectModel = () => {
       cosModelName: 'fordMotorEngine-draco.glb',
       cameraOffset: 20,
       cameraLock: [0, 1, 0],
-      lightIntensity: [0, 0, 2, 2]
+      lightIntensity: [0, 0, 2, 2],
+      rotationAxis: 'y'
     },
     industrialDiesel: {
       cosModelName: 'industrialDiesel-draco.glb',

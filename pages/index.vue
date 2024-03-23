@@ -137,8 +137,13 @@ const renderModel = async (): Promise<void> => {
   camera.position.copy(cameraPosition)
   camera.lookAt(0, 0, 0)
 
-  directionalLightTop.position.set(0, 0, cameraOffset)
-  directionalLightBottom.position.set(0, 0, -cameraOffset)
+  if (selectedModel.rotationAxis) {
+    if (selectedModel.rotationAxis === 'x') directionalLightTop.position.set(cameraOffset, 0, 0); directionalLightBottom.position.set(-cameraOffset, 0, 0)
+    if (selectedModel.rotationAxis === 'y') directionalLightTop.position.set(0, cameraOffset, 0); directionalLightBottom.position.set(0, -cameraOffset, 0)
+  } else {
+    directionalLightTop.position.set(0, 0, cameraOffset)
+    directionalLightBottom.position.set(0, 0, -cameraOffset)
+  }
 
   // Base Controls
   const controls = track(new OrbitControls(camera, canvas))
@@ -222,7 +227,12 @@ const renderModel = async (): Promise<void> => {
         // Render
         const tick = (): void => {
           const elapsedTime = clock.getElapsedTime()
-          container.rotation.z = 0.5 * elapsedTime
+          if (selectedModel.rotationAxis) {
+            if (selectedModel.rotationAxis === 'x') container.rotation.x = 0.5 * elapsedTime
+            if (selectedModel.rotationAxis === 'y') container.rotation.y = 0.5 * elapsedTime
+          } else {
+            container.rotation.z = 0.5 * elapsedTime
+          }
 
           // Update controls
           controls.update()
