@@ -11,5 +11,12 @@ export default defineNuxtConfig({
   modules: [
     '@vueuse/nuxt',
     '@nuxt/ui'
-  ]
+  ],
+  colorMode: {
+    preference: 'light',
+    fallback: 'light'
+  },
+  ui: {
+    icons: ['heroicons', 'simple-icons', 'ph']
+  }
 })
