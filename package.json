@@ -9,8 +9,10 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "release": "bumpp -r",
-    "test": "pnpm lint && pnpm typecheck"
+    "lint": "eslint .",
+    "typecheck": "nuxi typecheck",
+    "test": "pnpm lint && pnpm typecheck",
+    "release": "bumpp -r"
   },
   "devDependencies": {
     "@iconify-json/heroicons": "^1.1.20",
