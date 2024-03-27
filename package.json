@@ -12,8 +12,8 @@
   "devDependencies": {
     "@iconify-json/heroicons": "^1.1.20",
     "@iconify-json/ph": "^1.1.11",
-    "@iconify-json/simple-icons": "^1.1.96",
-    "@nuxt/devtools": "latest",
+    "@iconify-json/simple-icons": "^1.1.97",
+    "@nuxt/devtools": "^1.1.4",
     "@nuxt/eslint-config": "^0.2.0",
     "@types/three": "^0.162.0",
     "eslint": "^8.57.0",
@@ -23,7 +23,7 @@
     "vue-tsc": "^2.0.7"
   },
   "dependencies": {
-    "@nuxt/ui": "^2.14.2",
+    "@nuxt/ui": "^2.15.0",
     "@vueuse/components": "^10.9.0",
     "@vueuse/core": "^10.9.0",
     "@vueuse/nuxt": "^10.9.0",
