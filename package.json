@@ -8,7 +8,9 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "release": "bumpp -r",
+    "test": "pnpm lint && pnpm typecheck"
   },
   "devDependencies": {
     "@iconify-json/heroicons": "^1.1.20",
@@ -17,6 +19,7 @@
     "@nuxt/devtools": "^1.1.4",
     "@nuxt/eslint-config": "^0.2.0",
     "@types/three": "^0.162.0",
+    "bumpp": "^9.4.0",
     "changelogithub": "^0.13.5",
     "eslint": "^8.57.0",
     "nuxt": "^3.11.1",
