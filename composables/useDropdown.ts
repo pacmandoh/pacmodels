@@ -20,7 +20,7 @@ export const useDropdown = () => {
       disabled: route.query.model ? route.query.model === modelName : modelName === 'duramax' ? true : false
     }
 
-    dropdownItems[0].unshift(dropdownItem)
+    dropdownItems[0].push(dropdownItem)
   }
 
   return { dropdownItems }
