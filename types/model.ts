@@ -1,5 +1,3 @@
-import type { Vector3 } from 'three'
-
 export interface Model {
   cosModelName: string,
   cameraOffset: number,
