@@ -250,7 +250,6 @@ const renderModel = async (): Promise<void> => {
           renderer.setSize(width.value, height.value)
           camera.aspect = width.value / height.value
           camera.updateProjectionMatrix()
-          renderer.render(scene, camera)
         }
 
         tick()
@@ -280,7 +279,7 @@ const renderModel = async (): Promise<void> => {
 onMounted(() =>
   Promise.all([]).then(() => {
     void renderModel()
-    watch(sizes, () => updateSizes())
+    watch(ready, () => { if (ready.value) watch(sizes, () => updateSizes()) })
   })
 )
 
