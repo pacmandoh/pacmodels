@@ -4,29 +4,29 @@ It's cool to add a 3D model to your own web personal project, but it also faces 
 ## How to use 🔧
 You can select the car engine model you want through routing parameters, whether to display the selection, full screen, and color mode buttons.
 
-### Parameters include:
+### Parameters include (case-insensitive):
 
-### model (string)
-- duramax (default)
-- audiS8
-- carEngine1
-- carEngine2
-- carEngine3
-- bugattiW16
-- chevroletCorvetteV8
-- cumminsX15Truck
-- dodgeChallengerV8
-- fordMotorEngine
-- industrialDiesel
-- nissanAltimaHybrid4Cylinder
-- v12CarEngine
-- v8CarEngine
+#### model (string)
+- Duramax (default)
+- AudiS8
+- CarEngine1
+- CarEngine2
+- CarEngine3
+- BugattiW16
+- ChevroletCorvetteV8
+- CumminsX15Truck
+- DodgeChallengerV8
+- FordMotorEngine
+- IndustrialDiesel
+- NissanAltimaHybrid4Cylinder
+- V12CarEngine
+- V8CarEngine
 
-### needDropdown (boolean)
+#### needDropdown (boolean)
 - true (default)
 - false
 
-### needBottomButton (boolean)
+#### needBottomButton (boolean)
 - true (default)
 - false
 
