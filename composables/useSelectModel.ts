@@ -5,72 +5,91 @@ export const useSelectModel = () => {
   const route = useRoute()
 
   const models: Models = {
-    duramax: {
+    Duramax: {
       cosModelName: 'duramaxDieselV8t-draco.glb',
       cameraOffset: 300
     },
-    audiS8: {
+    AudiS8: {
       cosModelName: 'audiS8-draco.glb',
       cameraOffset: 90
     },
-    carEngine1: {
+    CarEngine1: {
       cosModelName: 'carEngine1-draco.glb',
       cameraOffset: 270
     },
-    carEngine2: {
+    CarEngine2: {
       cosModelName: 'carEngine2-draco.glb',
       cameraOffset: 300
     },
-    carEngine3: {
+    CarEngine3: {
       cosModelName: 'carEngine3-draco.glb',
       cameraOffset: 80,
-      lightIntensity: [0, 3, 3, 3]
+      lightIntensity: {
+        ambient: 0,
+        dirFront: 3,
+        spotFront: 0,
+        dirTop: 3,
+        dirBottom: 3
+      }
     },
-    bugattiW16: {
+    BugattiW16: {
       cosModelName: 'bugattiW16-draco.glb',
-      cameraOffset: 2,
-      cameraLock: [0, 1, 0],
-      rotationAxis: 'y'
+      cameraOffset: 1.3,
+      cameraLock: { x: 0, y: 1, z: 0 },
+      rotationAxis: 'y',
+      lightIntensity: {
+        ambient: 0,
+        dirFront: 0,
+        spotFront: 1,
+        dirTop: 1,
+        dirBottom: 1
+      }
     },
-    chevroletCorvetteV8: {
+    ChevroletCorvetteV8: {
       cosModelName: 'chevroletCorvetteV8-draco.glb',
       cameraOffset: 120
     },
-    cumminsX15Truck: {
+    CumminsX15Truck: {
       cosModelName: 'cumminsX15Truck-draco.glb',
       cameraOffset: 380
     },
-    dodgeChallengerV8: {
+    DodgeChallengerV8: {
       cosModelName: 'dodgeChallengerV8-draco.glb',
       cameraOffset: 410
     },
-    fordMotorEngine: {
+    FordMotorEngine: {
       cosModelName: 'fordMotorEngine-draco.glb',
       cameraOffset: 20,
-      cameraLock: [0, 1, 0],
-      lightIntensity: [0, 0, 2, 2],
+      cameraLock: { x: 0, y: 1, z: 0 },
+      lightIntensity: {
+        ambient: 0,
+        dirFront: 0,
+        spotFront: 0,
+        dirTop: 2,
+        dirBottom: 2
+      },
       rotationAxis: 'y'
     },
-    industrialDiesel: {
+    IndustrialDiesel: {
       cosModelName: 'industrialDiesel-draco.glb',
       cameraOffset: 250
     },
-    nissanAltimaHybrid4Cylinder: {
+    NissanAltimaHybrid4Cylinder: {
       cosModelName: 'nissanAltimaHybrid4Cylinder-draco.glb',
       cameraOffset: 90
     },
-    v12CarEngine: {
+    V12CarEngine: {
       cosModelName: 'v12CarEngine-draco.glb',
       cameraOffset: 120
     },
-    v8CarEngine: {
+    V8CarEngine: {
       cosModelName: 'v8CarEngine-draco.glb',
       cameraOffset: 60
     }
   }
-  const selectedModel = models[route.query.model as string] || models.duramax
-  const needDropdown = route.query.needDropdown ? (route.query.needDropdown === 'true') : true
-  const needBottomButton = route.query.needBottomButton ? (route.query.needBottomButton === 'true') : true
+  const selectedModel = models[route.query.model?.toString().toLowerCase() as string] || models.Duramax
+  const needDropdown = route.query.needDropdown ? (route.query.needDropdown?.toString().toLowerCase() === 'true') : true
+  const needBottomButton = route.query.needBottomButton ? (route.query.needBottomButton?.toString().toLowerCase() === 'true') : true
 
   return { selectedModel, models, needDropdown, needBottomButton }
 }

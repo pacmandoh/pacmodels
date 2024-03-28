@@ -45,22 +45,14 @@
 
 <script setup lang="ts">
 import * as Three from 'three'
-// interaction module
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-// glb or gltf files loader
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-
-// draco loader
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
-
-// MesOpt zip
 // import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
-
-// ResourceTracker
 import ResourceTracker from '../composables/useTrack'
 
-const title = 'PacDocs: 3D Model of Engines'
-const description = '3D Engines for PacDocs'
+const title = 'PacDocs: 3D Models by three.js'
+const description = '3D Models for PacDocs by three.js'
 useSeoMeta({
   title,
   ogTitle: title,
@@ -78,72 +70,86 @@ const toggleColorMode = () => {
     ? 'dark'
     : 'light'
 }
-
 const BASE = 'https://imgbucket-1318471229.cos.ap-beijing.myqcloud.com/model/'
 const MODEL = selectedModel.cosModelName
-
 const resTracker = new ResourceTracker()
 const track = resTracker.track.bind(resTracker)
-
 const progress = ref<number>()
-
 const { width, height } = useWindowSize()
 const sizes = computed(() => {
   return { width: width.value, height: height.value }
 })
-
 const ready = ref(false)
 
 let clearScene: () => void
 let updateSizes: () => void
 
 const renderModel = async (): Promise<void> => {
-  // sizes
+  const cameraOffset = selectedModel.cameraOffset
   const { width: sWidth, height: sHeight } = sizes.value
-
-  // Canvas
   const canvas = document.querySelector<HTMLCanvasElement>('canvas#pacdocs-engine')!
 
-  // Scene
   const scene = track(new Three.Scene())
   const loader = track(new GLTFLoader())
 
+  // Compress Descode
   const dracoLoader = track(new DRACOLoader())
   dracoLoader.setDecoderPath('./draco/')
   loader.setDRACOLoader(dracoLoader)
-
-  // MeshOpt // FIX can not clear memory correct
+  // MeshOpt
   // loader.setMeshoptDecoder(MeshoptDecoder)
 
   // Lights
-  const lightIntensity = selectedModel.lightIntensity ? selectedModel.lightIntensity : [0, 1, 3, 3]
-  const ambientLight = track(new Three.AmbientLight(0xffffff, lightIntensity[0]))
-  const directionalLightFront = track(new Three.DirectionalLight(0xffffff, lightIntensity[1]))
-  const directionalLightTop = track(new Three.DirectionalLight(0xffffff, lightIntensity[2]))
-  const directionalLightBottom = track(new Three.DirectionalLight(0xffffff, lightIntensity[3]))
-
-  scene.add(ambientLight)
-  scene.add(directionalLightFront)
-  scene.add(directionalLightTop)
-  scene.add(directionalLightBottom)
+  let directionalLightFront: Three.DirectionalLight, spotLightFront: Three.SpotLight
+  const lightIntensity = selectedModel.lightIntensity ? selectedModel.lightIntensity : { ambient: 0, dirFront: 1, spotFront: 0, dirTop: 3, dirBottom: 1 }
+  // ambient
+  if (lightIntensity.ambient !== 0) {
+    const ambientLight = track(new Three.AmbientLight(0xffffff, lightIntensity.ambient))
+    scene.add(ambientLight)
+  }
+  // dirFront
+  if (lightIntensity.dirFront !== 0) {
+    directionalLightFront = track(new Three.DirectionalLight(0xffffff, lightIntensity.dirFront))
+    scene.add(directionalLightFront)
+  }
+  // dirTop
+  if (lightIntensity.dirTop !== 0) {
+    const directionalLightTop = track(new Three.DirectionalLight(0xffffff, lightIntensity.dirTop))
+    scene.add(directionalLightTop)
+    if (selectedModel.rotationAxis) {
+      if (selectedModel.rotationAxis === 'x') directionalLightTop.position.set(cameraOffset, 0, 0)
+      if (selectedModel.rotationAxis === 'y') directionalLightTop.position.set(0, cameraOffset, 0)
+    } else {
+      directionalLightTop.position.set(0, 0, cameraOffset)
+    }
+  }
+  // dirBottom
+  if (lightIntensity.dirBottom !== 0) {
+    const directionalLightBottom = track(new Three.DirectionalLight(0xffffff, lightIntensity.dirBottom))
+    scene.add(directionalLightBottom)
+    if (selectedModel.rotationAxis) {
+      if (selectedModel.rotationAxis === 'x') directionalLightBottom.position.set(-cameraOffset, 0, 0)
+      if (selectedModel.rotationAxis === 'y') directionalLightBottom.position.set(0, -cameraOffset, 0)
+    } else {
+      directionalLightBottom.position.set(0, 0, -cameraOffset)
+    }
+  }
+  // spotFront
+  if (lightIntensity.spotFront !== 0) {
+    spotLightFront = track(new Three.SpotLight(0xffffff, lightIntensity.spotFront))
+    spotLightFront.angle = Math.PI * 0.2
+    spotLightFront.decay = 0
+    scene.add(spotLightFront)
+  }
 
   // Base camera
   const camera = track(new Three.PerspectiveCamera(45, sWidth / sHeight, 1, 1000))
-  const cameraLock = selectedModel.cameraLock || [0, 0, 1]
-  camera.up.set(cameraLock[0], cameraLock[1], cameraLock[2]) // lock Z-axis toward up
-  const cameraOffset = selectedModel.cameraOffset // camera height
-  const cameraPositionArray = selectedModel.cameraPosition || [cameraOffset, cameraOffset, cameraOffset]
-  const cameraPosition = track(new Three.Vector3(cameraPositionArray[0], cameraPositionArray[1], cameraPositionArray[2]))
+  const cameraLock = selectedModel.cameraLock || { x: 0, y: 0, z: 1 }
+  camera.up.set(cameraLock.x, cameraLock.y, cameraLock.z) // lock axis toward up
+  const cameraPositionClass = selectedModel.cameraPosition || { x: cameraOffset, y: cameraOffset, z: cameraOffset }
+  const cameraPosition = track(new Three.Vector3(cameraPositionClass.x, cameraPositionClass.y, cameraPositionClass.z))
   camera.position.copy(cameraPosition)
   camera.lookAt(0, 0, 0)
-
-  if (selectedModel.rotationAxis) {
-    if (selectedModel.rotationAxis === 'x') directionalLightTop.position.set(cameraOffset, 0, 0); directionalLightBottom.position.set(-cameraOffset, 0, 0)
-    if (selectedModel.rotationAxis === 'y') directionalLightTop.position.set(0, cameraOffset, 0); directionalLightBottom.position.set(0, -cameraOffset, 0)
-  } else {
-    directionalLightTop.position.set(0, 0, cameraOffset)
-    directionalLightBottom.position.set(0, 0, -cameraOffset)
-  }
 
   // Base Controls
   const controls = track(new OrbitControls(camera, canvas))
@@ -154,29 +160,26 @@ const renderModel = async (): Promise<void> => {
   // controls.minPolarAngle = Math.PI / 2
   // controls.maxPolarAngle = Math.PI / 2
 
-  // Render
+  // Renderer
   const renderer = track(new Three.WebGLRenderer({
     alpha: false,
     antialias: true,
     canvas
   }))
-  // render background
   renderer.setClearColor(0x000000, 0)
   renderer.shadowMap.enabled = true // enable shadow
   renderer.shadowMap.type = Three.PCFSoftShadowMap
   renderer.setSize(sWidth, sHeight)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-  // clock timer
   const clock = track(new Three.Clock())
 
-  // render Model
+  // Main
   await Promise.all([
     new Promise<void>((reslove) =>
       loader.load(BASE + MODEL, (gltf: { scene: Three.Object3D }) => {
         const model = gltf.scene
         track(gltf.scene)
-
         model.traverse((child: Three.Object3D) => {
           if (child instanceof Three.Mesh) {
             if (child.material instanceof Three.MeshStandardMaterial) {
@@ -194,37 +197,33 @@ const renderModel = async (): Promise<void> => {
             }
           }
         })
-        model.castShadow = true // need object cast shadow
-        model.receiveShadow = true // need object receive shadow
-
-        // computed model center point
+        model.castShadow = true
+        model.receiveShadow = true
+        // Computed model center point
         const boundingBox = track(new Three.Box3().setFromObject(model))
         const center = track(new Three.Vector3())
         const size = track(new Three.Vector3())
         boundingBox.getSize(size)
         boundingBox.getCenter(center)
-
-        // offset model center to origin point
+        // Offset model center to origin point
         const moveVector = track(new Three.Vector3(0, 0, 0).sub(center))
         model.position.add(moveVector)
-
-        // add model to scene
+        // Add model to scene
         if (!scene.getObjectByName('modelName')) {
           scene.add(model)
         }
 
-        // helper
+        // Helper
         // const axisHelper = new Three.AxesHelper(1000)
         // scene.add(axisHelper)
 
-        // Group
-        // Solve the problem of rotation after the middle point of the mobile model to the origin.
+        // Container
         const container = track(new Three.Group())
         container.add(model)
         scene.add(container)
         container.position.set(0, 0, 0)
 
-        // Render
+        // Render & Animation
         const tick = (): void => {
           const elapsedTime = clock.getElapsedTime()
           if (selectedModel.rotationAxis) {
@@ -233,19 +232,19 @@ const renderModel = async (): Promise<void> => {
           } else {
             container.rotation.z = 0.5 * elapsedTime
           }
-
           // Update controls
           controls.update()
           // Render
           renderer.render(scene, camera)
           // Call tick again on the next frame
           window.requestAnimationFrame(tick)
-
-          // get animated camera position
+          // Get animated camera position
           const cameraPosition = camera.position.clone()
-          directionalLightFront.position.copy(cameraPosition)
+          if (lightIntensity.dirFront !== 0) directionalLightFront.position.copy(cameraPosition)
+          if (lightIntensity.spotFront !== 0) spotLightFront.position.copy(cameraPosition)
         }
 
+        // Adapting function
         updateSizes = (): void => {
           renderer.setSize(width.value, height.value)
           camera.aspect = width.value / height.value
