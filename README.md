@@ -1,4 +1,4 @@
-## 3D Engine Model for [PacDocs](https://crybabyaq.love)
+## 3D Models for [PacDocs](https://crybabyaq.love)
 It's cool to add a 3D model to your own web personal project, but it also faces a memory leak caused by the 3D model, and the memory leak is a very painful thing for me, a rookie, and it can't be investigated at all. Looking at the document example of Three.js, I found that the force is embedded through `<iframe />`, so this 3D model project for iframe embedding was created by combining Nuxt and three.js.
 
 ## How to use 🔧
