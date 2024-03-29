@@ -4,9 +4,15 @@ It's cool to add a 3D model to your own web personal project, but it also faces 
 ## How to use 🔧
 You can select the car engine model you want through routing parameters, whether to display the selection, full screen, and color mode buttons.
 
-### Parameters include (case-insensitive):
+### Parameters include:
 
-#### model (string)
+#### group (string) (Optional)
+This parameter **doesn't need to be filled in!** The model parameter you input will automatically recognize its group.
+- Engine (default)
+- ...
+- To be added
+
+#### model (string) (!case-sensitive ⚠️)
 - Duramax (default)
 - AudiS8
 - CarEngine1
@@ -22,20 +28,21 @@ You can select the car engine model you want through routing parameters, whether
 - V12CarEngine
 - V8CarEngine
 
-#### needDropdown (boolean)
+#### navigation (boolean) (case-insensitive)
+This parameter determines whether to display the sidebar navigation.
 - true (default)
 - false
 
-#### needBottomButton (boolean)
+#### button (boolean) (case-insensitive)
+This parameter determines whether to display the bottom buttons.
 - true (default)
 - false
 
 ## examples 📃
 You can view the model by visiting the website directly.
-[https://model.crybabyaq.love/?model=audiS8&needDropdown=false&needBottomButton=false](https://model.crybabyaq.love/?model=audiS8&needDropdown=false&needBottomButton=false)
+[https://model.crybabyaq.love/?model=AudiS8&navigation=false&button=false](https://model.crybabyaq.love/?model=AudiS8&navigation=false&button=false)
 
-Similarly, you can also embed it in your personal website or web project through `<iframe />`
-
+Similarly, you can also embed it in your personal website or web project through `<iframe />`:
 ```html
 <iframe
   width="100%"

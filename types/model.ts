@@ -14,5 +14,7 @@ export interface Model {
 }
 
 export interface Models {
-  [key: string]: Model;
+  [key: string]: {
+    [key: string]: Model
+  }
 }

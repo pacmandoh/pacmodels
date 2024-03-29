@@ -12,32 +12,84 @@
       <div class="sk-cube sk-cube-9" />
       <UMeter :value="progress" label="模型加载中..." icon="i-heroicons-globe-asia-australia-solid" indicator />
     </div>
-    <div v-if="needDropdown" class="absolute top-4 left-4">
-      <UDropdown
-        :items="dropdownItems"
-        :popper="{ placement: 'right-start' }"
-        :ui="{
-          container: 'mt-8',
-          background: 'bg-white dark:bg-gray-950',
-          item: { padding: 'gap-x-2.5 py-2.5', inactive: 'dark:bg-gray-950' },
-        }"
-      >
-        <UButton color="white" label="引擎选择" size="lg" icon="i-heroicons-chevron-down-16-solid" variant="solid" />
-      </UDropdown>
-    </div>
     <div class="overflow-hidden h-full w-full bg-transparent">
       <canvas id="pacdocs-engine" ref="el" :style="{ display: ready ? 'block' : 'none' }" />
     </div>
-    <div v-if="needBottomButton" class="absolute bottom-4 right-4">
+    <div v-if="needBottomButton" class="absolute bottom-2 right-2">
       <div class="flex flex-row gap-0">
-        <UButton color="gray" size="lg" icon="i-ph-arrows-out-bold" variant="ghost" @click="toggle" />
-        <UButton
-          color="gray"
-          size="lg"
-          variant="ghost"
-          :icon="colorMode.preference == 'light' ? 'i-ph-sun-duotone' : 'i-ph-moon-duotone'"
-          @click="toggleColorMode"
-        />
+        <UTooltip text="GitHub">
+          <UButton
+            color="gray"
+            size="lg"
+            icon="i-simple-icons-github"
+            variant="ghost"
+            to="https://github.com/pacmandoh/pacmodels"
+            target="_blank"
+            :ui="{ rounded: 'rounded-full' }"
+          />
+        </UTooltip>
+
+        <UTooltip text="全屏">
+          <UButton
+            color="gray"
+            size="lg"
+            icon="i-ph-arrows-out-bold"
+            variant="ghost"
+            :ui="{ rounded: 'rounded-full' }"
+            @click="toggle"
+          />
+        </UTooltip>
+
+        <UTooltip :text="colorMode.preference === 'dark' ? '切换日间模式' : '切换暗色模式'">
+          <UButton
+            color="gray"
+            size="lg"
+            variant="ghost"
+            :icon="colorMode.preference == 'light' ? 'i-ph-sun-duotone' : 'i-ph-moon-duotone'"
+            :ui="{ rounded: 'rounded-full' }"
+            @click="toggleColorMode"
+          />
+        </UTooltip>
+
+        <div v-if="needNavigation">
+          <UTooltip text="模型列表">
+            <UButton
+              variant="ghost"
+              color="gray"
+              icon="i-ph-list-bullets-duotone"
+              size="lg"
+              :ui="{ rounded: 'rounded-full' }"
+              @click="isOpen = true"
+            />
+          </UTooltip>
+          <USlideover
+            v-model="isOpen"
+            side="left"
+            :ui="{ width: 'w-screen max-w-sm', base: 'relative flex-1 flex flex-col w-full focus:outline-none rounded-2xl' }"
+            class="rounded-xl"
+          >
+            <UCard class="flex flex-col flex-1 overflow-y-auto" :ui="{ body: { base: 'flex-1 overflow-y-auto' }, ring: '', divide: 'divide-y divide-gray-200 dark:divide-gray-800' }">
+              <template #header>
+                <div class="flex justify-between">
+                  <div class="items-center justify-center flex flex-row gap-1">
+                    <UIcon name="i-ph-magnet-duotone" class="bg-sky-500 dark:bg-sky-400" />
+                    <h3>模型列表</h3>
+                    <UBadge :label="`v${runtimeConfig.public.version}`" variant="subtle" />
+                  </div>
+                  <UButton variant="ghost" icon="i-heroicons-x-mark-20-solid" color="gray" @click="isOpen = false" />
+                </div>
+              </template>
+
+              <NavigationAccordion :links="links" :default-open="0" />
+
+              <template #footer>
+                <div class="flex justify-center items-center gap-1 text-sm">
+                  <UIcon name="i-simple-icons-nuxtdotjs" /> Copyright <UIcon name="i-ph-copyright-duotone" /> {{ new Date().getFullYear() }} PacmanDoh
+                </div>
+              </template>
+            </UCard>
+          </USlideover>
+        </div>
       </div>
     </div>
   </ClientOnly>
@@ -51,7 +103,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 // import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import ResourceTracker from '../composables/useTrack'
 
-const title = 'PacDocs: 3D Models by three.js'
+const title = 'PacModels: 3D Models by three.js'
 const description = '3D Models for PacDocs by three.js'
 useSeoMeta({
   title,
@@ -60,8 +112,18 @@ useSeoMeta({
   ogDescription: description
 })
 
-const { selectedModel, needDropdown, needBottomButton } = useSelectModel()
-const { dropdownItems } = useDropdown()
+const route = useRoute()
+const isOpen = ref(false)
+defineShortcuts({
+  escape: {
+    usingInput: true,
+    whenever: [isOpen],
+    handler: () => { isOpen.value = false }
+  }
+})
+const runtimeConfig = useRuntimeConfig()
+const { selectedGroup, selectedModel, needNavigation, needBottomButton } = useSelectModel()
+const { links } = useNavigation()
 const el = ref<HTMLElement | null>(null)
 const { toggle } = useFullscreen(el)
 const colorMode = useColorMode()
@@ -282,6 +344,28 @@ onMounted(() =>
   })
 )
 
+onMounted(() => {
+  // notification
+  const toast = useToast()
+  if (route.query.model) {
+    if (!selectedGroup[route.query.model?.toString() as string]) {
+      toast.add({
+        id: 'error',
+        title: '模型不存在!',
+        description: '您通过参数来展示的模型不存在，故显示默认的模型。',
+        icon: 'i-ph-seal-warning-duotone',
+        color: 'red',
+        timeout: 20000,
+        actions: [{
+          label: '查看参数 ➜',
+          to: 'https://github.com/pacmandoh/pacmodels/blob/main/README.md',
+          target: '_blank'
+        }]
+      })
+    }
+  }
+})
+
 onBeforeUnmount(() => {
   clearScene()
 })
@@ -304,7 +388,7 @@ onBeforeUnmount(() => {
   height: 33%;
   float: left;
   animation: sk-cube-grid-scale-delay 1.3s infinite ease-in-out;
-  @apply bg-gray-400
+  @apply bg-primary-500 dark:bg-primary-400
 }
 .sk-cube-1 {
   animation-delay: 0.2s;
