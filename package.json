@@ -18,7 +18,7 @@
     "@iconify-json/heroicons": "^1.1.20",
     "@iconify-json/ph": "^1.1.11",
     "@iconify-json/simple-icons": "^1.1.97",
-    "@nuxt/devtools": "^1.1.4",
+    "@nuxt/devtools": "^1.1.5",
     "@nuxt/eslint-config": "^0.2.0",
     "@types/three": "^0.162.0",
     "bumpp": "^9.4.0",
@@ -34,6 +34,6 @@
     "@vueuse/components": "^10.9.0",
     "@vueuse/core": "^10.9.0",
     "@vueuse/nuxt": "^10.9.0",
-    "three": "^0.162.0"
+    "three": "^0.163.0"
   }
 }
