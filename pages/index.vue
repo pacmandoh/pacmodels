@@ -148,6 +148,7 @@ let updateSizes: () => void
 
 const renderModel = async (): Promise<void> => {
   const cameraOffset = selectedModel.cameraOffset
+  const textures = selectedModel.textures || false
   const { width: sWidth, height: sHeight } = sizes.value
   const canvas = document.querySelector<HTMLCanvasElement>('canvas#pacdocs-engine')!
 
@@ -240,25 +241,29 @@ const renderModel = async (): Promise<void> => {
   await Promise.all([
     new Promise<void>((reslove) =>
       loader.load(BASE + MODEL, (gltf: { scene: Three.Object3D }) => {
-        const model = gltf.scene
-        track(gltf.scene)
-        model.traverse((child: Three.Object3D) => {
-          if (child instanceof Three.Mesh) {
-            if (child.material instanceof Three.MeshStandardMaterial) {
-              const material = track(new Three.MeshStandardMaterial({
-                color: child.material.color,
-                metalness: child.material.metalness,
-                roughness: child.material.roughness,
-                displacementScale: child.material.displacementScale,
-                emissive: child.material.emissive,
-                emissiveIntensity: child.material.emissiveIntensity,
-                alphaTest: child.material.alphaTest
-              }))
-              child.material = material
-              material.dispose()
+        const model = track(gltf.scene)
+        if (!textures) {
+          model.traverse((child: Three.Object3D) => {
+            if (child instanceof Three.Mesh) {
+              if (child.material instanceof Three.MeshStandardMaterial) {
+                const material = track(new Three.MeshStandardMaterial({
+                  color: child.material.color,
+                  metalness: child.material.metalness,
+                  roughness: child.material.roughness,
+                  displacementScale: child.material.displacementScale,
+                  emissive: child.material.emissive,
+                  emissiveIntensity: child.material.emissiveIntensity,
+                  alphaTest: child.material.alphaTest,
+                  opacity: child.material.opacity,
+                  transparent: child.material.transparent,
+                  flatShading: child.material.flatShading
+                }))
+                child.material = material
+                material.dispose()
+              }
             }
-          }
-        })
+          })
+        }
         model.castShadow = true
         model.receiveShadow = true
         // Computed model center point
