@@ -10,8 +10,7 @@ export interface Model {
     dirTop: number,
     dirBottom: number
   },
-  rotationAxis?: string,
-  textures?: boolean
+  rotationAxis?: string
 }
 
 export interface Models {
