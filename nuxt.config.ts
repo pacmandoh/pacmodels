@@ -19,7 +19,7 @@ export default defineNuxtConfig({
     fallback: 'light'
   },
   ui: {
-    icons: ['heroicons', 'simple-icons', 'ph', 'cbi']
+    icons: ['heroicons', 'simple-icons', 'ph', 'cbi', 'carbon']
   },
   runtimeConfig: {
     public: {
