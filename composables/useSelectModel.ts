@@ -176,7 +176,7 @@ export const useSelectModel = () => {
   const selectedGroup = models[getGroupName(route.query.model?.toString() as string)] || models.Engines
   const selectedModel = selectedGroup[route.query.model?.toString() as string] || selectedGroup.Duramax
   const needBottomButton = route.query.button ? (route.query.button?.toString().toLowerCase() === 'true') : true
-  const needZoom = route.query.button ? (route.query.zoom?.toString().toLowerCase() === 'true') : true
+  const needZoom = route.query.zoom ? (route.query.zoom?.toString().toLowerCase() === 'true') : true
 
   return { selectedGroup, selectedModel, models, needBottomButton, needZoom }
 }
