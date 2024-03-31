@@ -255,7 +255,7 @@ const renderModel = async (): Promise<void> => {
               light.shadow.camera.far = cameraOffset * 100
               light.shadow.camera.near = cameraOffset / 100
               light.shadow.camera.castShadow = true
-              scene.add(new Three.CameraHelper(light.shadow.camera))
+              // scene.add(new Three.CameraHelper(light.shadow.camera))
             }
             lights.push(light)
           }
@@ -287,8 +287,8 @@ const renderModel = async (): Promise<void> => {
         // controls.maxPolarAngle = Math.PI / 2
 
         // Helper
-        const axisHelper = new Three.AxesHelper(3000)
-        scene.add(axisHelper)
+        // const axisHelper = new Three.AxesHelper(3000)
+        // scene.add(axisHelper)
 
         // Container
         const container = track(new Three.Group())
