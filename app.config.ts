@@ -30,7 +30,20 @@ export default defineAppConfig({
       hash: 'i-heroicons-hashtag-20-solid',
       menu: 'i-heroicons-bars-3-20-solid',
       close: 'i-heroicons-x-mark-20-solid',
-      check: 'i-heroicons-check-circle-20-solid'
+      check: 'i-heroicons-check-circle-20-solid',
+      engine: 'i-ph-engine-duotone',
+      automobile: 'i-ph-car-profile-duotone',
+      gm: 'i-simple-icons-generalmotors',
+      chevrolet: 'i-simple-icons-chevrolet',
+      bugatti: 'i-simple-icons-bugatti',
+      audi: 'i-simple-icons-audi',
+      ford: 'i-simple-icons-ford',
+      nissan: 'i-simple-icons-nissan',
+      dodge: 'i-cbi-dodge',
+      astonmartin: 'i-simple-icons-astonmartin',
+      batman: 'i-carbon-bat',
+      landrover: 'i-simple-icons-landrover',
+      cube: 'i-ph-cube-duotone'
     },
     presets: {
       button: {

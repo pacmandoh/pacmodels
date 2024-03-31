@@ -1,26 +1,35 @@
 export const useNavigation = () => {
   const { models } = useSelectModel()
   const route = useRoute()
+  const icons = useAppConfig().ui.icons
 
   const links = [{
     label: '引擎',
-    icon: 'i-ph-engine-duotone',
+    icon: icons.engine,
+    children: []
+  }, {
+    label: '汽车',
+    icon: icons.automobile,
+    children: []
+  }, {
+    label: '杂项',
+    icon: icons.cube,
     children: []
   }]
 
-  // Engine group
-  for (const modelName in models.Engine) {
-    const Item = {
-      label: modelName,
-      icon: 'i-ph-engine-duotone',
-      target: '_top',
-      to: `/?model=${modelName}`,
-      active: route.query.model ? route.query.model === modelName : modelName === 'Duramax' ? true : false
-    }
-
-    //@ts-ignore
-    links[0].children?.push(Item)
-  }
+  Object.values(models).forEach((group, index) => {
+    Object.keys(group).forEach((modelName) => {
+      //@ts-ignore
+      links[index].children.push({
+        label: modelName,
+        icon: group[modelName].icon || links[index].icon,
+        to: `/?model=${modelName}`,
+        target: '_top',
+        active: route.query.model ? route.query.model === modelName : modelName === 'Duramax' ? true : false,
+        badge: group[modelName].badge ? group[modelName].badge : undefined
+      })
+    })
+  })
 
   return { links }
 }
