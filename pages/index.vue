@@ -51,45 +51,43 @@
           />
         </UTooltip>
 
-        <div v-if="needNavigation">
-          <UTooltip text="模型列表">
-            <UButton
-              variant="ghost"
-              color="gray"
-              icon="i-ph-list-bullets-duotone"
-              size="lg"
-              :ui="{ rounded: 'rounded-full' }"
-              @click="isOpen = true"
-            />
-          </UTooltip>
-          <USlideover
-            v-model="isOpen"
-            side="left"
-            :ui="{ width: 'w-screen max-w-sm', base: 'relative flex-1 flex flex-col w-full focus:outline-none rounded-2xl' }"
-            class="rounded-xl"
-          >
-            <UCard class="flex flex-col flex-1 overflow-y-auto" :ui="{ body: { base: 'flex-1 overflow-y-auto' }, ring: '', divide: 'divide-y divide-gray-200 dark:divide-gray-800' }">
-              <template #header>
-                <div class="flex justify-between">
-                  <div class="items-center justify-center flex flex-row gap-1">
-                    <UIcon name="i-ph-magnet-duotone" class="bg-sky-500 dark:bg-sky-400" />
-                    <h3>模型列表</h3>
-                    <UBadge :label="`v${runtimeConfig.public.version}`" variant="subtle" />
-                  </div>
-                  <UButton variant="ghost" icon="i-heroicons-x-mark-20-solid" color="gray" @click="isOpen = false" />
+        <UTooltip text="模型列表">
+          <UButton
+            variant="ghost"
+            color="gray"
+            icon="i-ph-list-bullets-duotone"
+            size="lg"
+            :ui="{ rounded: 'rounded-full' }"
+            @click="isOpen = true"
+          />
+        </UTooltip>
+        <USlideover
+          v-model="isOpen"
+          side="left"
+          :ui="{ width: 'w-screen max-w-sm', base: 'relative flex-1 flex flex-col w-full focus:outline-none rounded-2xl' }"
+          class="rounded-xl"
+        >
+          <UCard class="flex flex-col flex-1 overflow-y-auto" :ui="{ body: { base: 'flex-1 overflow-y-auto' }, ring: '', divide: 'divide-y divide-gray-200 dark:divide-gray-800' }">
+            <template #header>
+              <div class="flex justify-between">
+                <div class="items-center justify-center flex flex-row gap-1">
+                  <UIcon name="i-ph-magnet-duotone" class="bg-sky-500 dark:bg-sky-400" />
+                  <h3>模型列表</h3>
+                  <UBadge :label="`v${runtimeConfig.public.version}`" variant="subtle" />
                 </div>
-              </template>
+                <UButton variant="ghost" icon="i-heroicons-x-mark-20-solid" color="gray" @click="isOpen = false" />
+              </div>
+            </template>
 
-              <NavigationAccordion :links="links" :default-open="0" />
+            <NavigationAccordion :links="links" :default-open="false" />
 
-              <template #footer>
-                <div class="flex justify-center items-center gap-1 text-sm">
-                  <UIcon name="i-simple-icons-nuxtdotjs" /> Copyright <UIcon name="i-ph-copyright-duotone" /> {{ new Date().getFullYear() }} PacmanDoh
-                </div>
-              </template>
-            </UCard>
-          </USlideover>
-        </div>
+            <template #footer>
+              <div class="flex justify-center items-center gap-1 text-sm">
+                <UIcon name="i-simple-icons-nuxtdotjs" /> Copyright <UIcon name="i-ph-copyright-duotone" /> {{ new Date().getFullYear() }} PacmanDoh
+              </div>
+            </template>
+          </UCard>
+        </USlideover>
       </div>
     </div>
   </ClientOnly>
@@ -102,6 +100,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 // import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import ResourceTracker from '../composables/useTrack'
+import type { LightConfig, Vector3Map, RotationAxisMap } from '~/types'
 
 const title = 'PacModels: 3D Models by three.js'
 const description = '3D Models for PacDocs by three.js'
@@ -122,7 +121,7 @@ defineShortcuts({
   }
 })
 const runtimeConfig = useRuntimeConfig()
-const { selectedGroup, selectedModel, needNavigation, needBottomButton } = useSelectModel()
+const { selectedGroup, selectedModel, needBottomButton, needZoom } = useSelectModel()
 const { links } = useNavigation()
 const el = ref<HTMLElement | null>(null)
 const { toggle } = useFullscreen(el)
@@ -147,10 +146,12 @@ let clearScene: () => void
 let updateSizes: () => void
 
 const renderModel = async (): Promise<void> => {
-  const cameraOffset = selectedModel.cameraOffset
+  let cameraOffset: number
+  if (selectedModel.cameraOffset) cameraOffset = selectedModel.cameraOffset
   const { width: sWidth, height: sHeight } = sizes.value
-  const canvas = document.querySelector<HTMLCanvasElement>('canvas#pacdocs-engine')!
 
+  // Basic
+  const canvas = document.querySelector<HTMLCanvasElement>('canvas#pacdocs-engine')!
   const scene = track(new Three.Scene())
   const loader = track(new GLTFLoader())
 
@@ -160,67 +161,6 @@ const renderModel = async (): Promise<void> => {
   loader.setDRACOLoader(dracoLoader)
   // MeshOpt
   // loader.setMeshoptDecoder(MeshoptDecoder)
-
-  // Lights
-  let directionalLightFront: Three.DirectionalLight, spotLightFront: Three.SpotLight
-  const lightIntensity = selectedModel.lightIntensity ? selectedModel.lightIntensity : { ambient: 0, dirFront: 1, spotFront: 0, dirTop: 3, dirBottom: 1 }
-  // ambient
-  if (lightIntensity.ambient !== 0) {
-    const ambientLight = track(new Three.AmbientLight(0xffffff, lightIntensity.ambient))
-    scene.add(ambientLight)
-  }
-  // dirFront
-  if (lightIntensity.dirFront !== 0) {
-    directionalLightFront = track(new Three.DirectionalLight(0xffffff, lightIntensity.dirFront))
-    scene.add(directionalLightFront)
-  }
-  // dirTop
-  if (lightIntensity.dirTop !== 0) {
-    const directionalLightTop = track(new Three.DirectionalLight(0xffffff, lightIntensity.dirTop))
-    scene.add(directionalLightTop)
-    if (selectedModel.rotationAxis) {
-      if (selectedModel.rotationAxis === 'x') directionalLightTop.position.set(cameraOffset, 0, 0)
-      if (selectedModel.rotationAxis === 'y') directionalLightTop.position.set(0, cameraOffset, 0)
-    } else {
-      directionalLightTop.position.set(0, 0, cameraOffset)
-    }
-  }
-  // dirBottom
-  if (lightIntensity.dirBottom !== 0) {
-    const directionalLightBottom = track(new Three.DirectionalLight(0xffffff, lightIntensity.dirBottom))
-    scene.add(directionalLightBottom)
-    if (selectedModel.rotationAxis) {
-      if (selectedModel.rotationAxis === 'x') directionalLightBottom.position.set(-cameraOffset, 0, 0)
-      if (selectedModel.rotationAxis === 'y') directionalLightBottom.position.set(0, -cameraOffset, 0)
-    } else {
-      directionalLightBottom.position.set(0, 0, -cameraOffset)
-    }
-  }
-  // spotFront
-  if (lightIntensity.spotFront !== 0) {
-    spotLightFront = track(new Three.SpotLight(0xffffff, lightIntensity.spotFront))
-    spotLightFront.angle = Math.PI * 0.2
-    spotLightFront.decay = 0
-    scene.add(spotLightFront)
-  }
-
-  // Base camera
-  const camera = track(new Three.PerspectiveCamera(45, sWidth / sHeight, 1, 1000))
-  const cameraLock = selectedModel.cameraLock || { x: 0, y: 0, z: 1 }
-  camera.up.set(cameraLock.x, cameraLock.y, cameraLock.z) // lock axis toward up
-  const cameraPositionClass = selectedModel.cameraPosition || { x: cameraOffset, y: cameraOffset, z: cameraOffset }
-  const cameraPosition = track(new Three.Vector3(cameraPositionClass.x, cameraPositionClass.y, cameraPositionClass.z))
-  camera.position.copy(cameraPosition)
-  camera.lookAt(0, 0, 0)
-
-  // Base Controls
-  const controls = track(new OrbitControls(camera, canvas))
-  controls.enableZoom = false
-  controls.enableDamping = true
-  controls.enablePan = false
-  // Lock Y Axis
-  // controls.minPolarAngle = Math.PI / 2
-  // controls.maxPolarAngle = Math.PI / 2
 
   // Renderer
   const renderer = track(new Three.WebGLRenderer({
@@ -246,11 +186,15 @@ const renderModel = async (): Promise<void> => {
           if (child.material instanceof Three.MeshStandardMaterial) {
             child.material.depthTest = true
             child.material.depthWrite = true
+            child.material.side = 0
+            child.material.shadowSide = Three.BackSide
+            if (child.material.opacity !== 1) child.material.depthWrite = false
           }
+          child.castShadow = true
+          child.receiveShadow = true
         })
-        model.castShadow = true
-        model.receiveShadow = true
-        // Computed model center point
+
+        // Computed
         const boundingBox = track(new Three.Box3().setFromObject(model))
         const center = track(new Three.Vector3())
         const size = track(new Three.Vector3())
@@ -259,20 +203,103 @@ const renderModel = async (): Promise<void> => {
         // Offset model center to origin point
         const moveVector = track(new Three.Vector3(0, 0, 0).sub(center))
         model.position.add(moveVector)
-        // Add model to scene
-        if (!scene.getObjectByName('modelName')) {
-          scene.add(model)
+        if (!cameraOffset) {
+          cameraOffset = Math.max(size.x, size.y, size.z)
         }
+        console.log('==> cameraOffset: ', cameraOffset)
+
+        // Lights
+        const lights: any = []
+        const { ambient = 0, dirFront = 1, spotFront = 0, dirTop = 1, dirBottom = 1, spotShadow = 5 } = selectedModel.lightIntensity || {}
+        const rotationAxisMap: RotationAxisMap = {
+          top: { x: track(new Three.Vector3(cameraOffset, 0, 0)), y: track(new Three.Vector3(0, cameraOffset, 0)), z: track(new Three.Vector3(0, 0, cameraOffset)) },
+          bottom: { x: track(new Three.Vector3(- cameraOffset, 0, 0)), y: track(new Three.Vector3(0, - cameraOffset, 0)), z: track(new Three.Vector3(0, 0, - cameraOffset)) },
+          spotShadowPosition: {
+            x: track(new Three.Vector3(cameraOffset * 2, 0, cameraOffset)),
+            y: track(new Three.Vector3(cameraOffset, cameraOffset * 2, 0)),
+            z: track(new Three.Vector3(0, cameraOffset, cameraOffset * 2))
+          }
+        }
+        const lightConfig: LightConfig = [
+          { type: 'AmbientLight', intensity: ambient },
+          { type: 'DirectionalLight', intensity: dirFront, label: 'front' },
+          { type: 'DirectionalLight', intensity: dirTop, position: rotationAxisMap.top[selectedModel.rotationAxis as string || 'z'] },
+          { type: 'DirectionalLight', intensity: dirBottom, position: rotationAxisMap.bottom[selectedModel.rotationAxis as string || 'z'] },
+          { type: 'SpotLight', intensity: spotFront, angle: Math.PI * 0.2, decay: 0, label: 'front' },
+          { type: 'SpotLight', intensity: spotShadow, angle: Math.PI * 0.2, decay: 0, label: 'castShadow', castShadow: true, position: rotationAxisMap.spotShadowPosition[selectedModel.rotationAxis as string || 'z'] }
+        ]
+        lightConfig.forEach((config) => {
+          if (config.intensity !== 0) {
+            //@ts-ignore
+            const light = track(new Three[config.type](0xffffff, config.intensity))
+            if (config.position) {
+              light.position.copy(config.position)
+            }
+            if (config.angle) {
+              light.angle = config.angle
+            }
+            if (config.decay !== undefined) {
+              light.decay = config.decay
+            }
+            if (config.label) {
+              light.label = config.label
+            }
+            if (config.castShadow) {
+              light.castShadow = true
+              light.shadow.mapSize.width = 1024
+              light.shadow.mapSize.height = 1024
+              light.shadow.camera.bottom = - cameraOffset
+              light.shadow.camera.top = cameraOffset
+              light.shadow.camera.right = cameraOffset
+              light.shadow.camera.left = - cameraOffset
+              light.shadow.camera.far = cameraOffset * 100
+              light.shadow.camera.near = cameraOffset / 100
+              light.shadow.camera.castShadow = true
+              scene.add(new Three.CameraHelper(light.shadow.camera))
+            }
+            lights.push(light)
+          }
+        })
+        lights.forEach((light: any) => { if (!light.castShadow) scene.add(light) })
+
+        // Camera
+        const camera = track(new Three.PerspectiveCamera(45, sWidth / sHeight, cameraOffset / 100, cameraOffset * 100))
+        const cameraLock = selectedModel.cameraLock || 'z'
+        const cameraLockMap: Vector3Map = {
+          'x': track(new Three.Vector3(1, 0, 0)),
+          'y': track(new Three.Vector3(0, 1, 0)),
+          'z': track(new Three.Vector3(0, 0, 1))
+        }
+        camera.up.copy(cameraLockMap[cameraLock])
+        const { x = cameraOffset, y = cameraOffset, z = cameraOffset } = selectedModel.cameraPosition || {}
+        const cameraPositionClass = track(new Three.Vector3(x, y, z))
+        camera.position.copy(cameraPositionClass)
+        camera.lookAt(0, 0, 0)
+        camera.updateProjectionMatrix()
+
+        // Controls
+        const controls = track(new OrbitControls(camera, canvas))
+        controls.enableZoom = needZoom
+        controls.enableDamping = true
+        controls.enablePan = false
+        // Lock Y Axis
+        // controls.minPolarAngle = Math.PI / 2
+        // controls.maxPolarAngle = Math.PI / 2
 
         // Helper
-        // const axisHelper = new Three.AxesHelper(1000)
-        // scene.add(axisHelper)
+        const axisHelper = new Three.AxesHelper(3000)
+        scene.add(axisHelper)
 
         // Container
         const container = track(new Three.Group())
         container.add(model)
         scene.add(container)
         container.position.set(0, 0, 0)
+        const lightHolder = track(new Three.Group())
+        lights.forEach((light: any) => {
+          if (light.castShadow) lightHolder.add(light)
+        })
+        scene.add(lightHolder)
 
         // Render & Animation
         const tick = (): void => {
@@ -291,8 +318,12 @@ const renderModel = async (): Promise<void> => {
           window.requestAnimationFrame(tick)
           // Get animated camera position
           const cameraPosition = camera.position.clone()
-          if (lightIntensity.dirFront !== 0) directionalLightFront.position.copy(cameraPosition)
-          if (lightIntensity.spotFront !== 0) spotLightFront.position.copy(cameraPosition)
+          lights.map((light: any) => {
+            if (light.label === 'front') {
+              light.position.copy(cameraPosition)
+            }
+          })
+          lightHolder.quaternion.copy(camera.quaternion)
         }
 
         // Adapting function
@@ -302,6 +333,20 @@ const renderModel = async (): Promise<void> => {
           camera.updateProjectionMatrix()
         }
 
+        clearScene = () => {
+          resTracker && resTracker.dispose()
+          scene.clear()
+          renderer.dispose()
+          renderer.forceContextLoss()
+          renderer.content = null
+          controls.dispose()
+          const gl = renderer.domElement.getContext('webgl')
+          gl && gl.getExtension('WEBGL_lose_context').loseContext()
+          if (typeof window !== 'undefined' && typeof window.gc === 'function') {
+            window.gc()
+          }
+        }
+
         tick()
         reslove()
       }, (xhr: any) => {
@@ -309,20 +354,6 @@ const renderModel = async (): Promise<void> => {
       })
     )
   ])
-
-  clearScene = () => {
-    resTracker && resTracker.dispose()
-    scene.clear()
-    renderer.dispose()
-    renderer.forceContextLoss()
-    renderer.content = null
-    controls.dispose()
-    const gl = renderer.domElement.getContext('webgl')
-    gl && gl.getExtension('WEBGL_lose_context').loseContext()
-    if (typeof window !== 'undefined' && typeof window.gc === 'function') {
-      window.gc()
-    }
-  }
   ready.value = true
 }
 

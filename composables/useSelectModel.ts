@@ -3,89 +3,163 @@ import type { Models } from '../types'
 
 export const useSelectModel = () => {
   const route = useRoute()
+  const icons = useAppConfig().ui.icons
 
   const models: Models = {
-    Engine: {
+    Engines: {
       Duramax: {
         cosModelName: 'duramaxDieselV8t-draco.glb',
-        cameraOffset: 300
+        icon: icons.gm
       },
       AudiS8: {
         cosModelName: 'audiS8-draco.glb',
-        cameraOffset: 90
+        cameraOffset: 90,
+        icon: icons.audi
       },
-      CarEngine1: {
-        cosModelName: 'carEngine1-draco.glb',
-        cameraOffset: 270
+      AudiR8: {
+        cosModelName: 'audiR8-draco.glb',
+        cameraLock: 'y',
+        rotationAxis: 'y',
+        icon: icons.audi,
+        badge: '新'
       },
-      CarEngine2: {
-        cosModelName: 'carEngine2-draco.glb',
-        cameraOffset: 300
-      },
-      CarEngine3: {
-        cosModelName: 'carEngine3-draco.glb',
-        cameraOffset: 80,
-        lightIntensity: {
-          ambient: 0,
-          dirFront: 3,
-          spotFront: 0,
-          dirTop: 3,
-          dirBottom: 3
-        }
+      AstonMartinV12: {
+        cosModelName: 'astonMartinV12-draco.glb',
+        cameraLock: 'y',
+        rotationAxis: 'y',
+        icon: icons.astonmartin,
+        badge: '新'
       },
       BugattiW16: {
         cosModelName: 'bugattiW16-draco.glb',
-        cameraOffset: 1.3,
-        cameraLock: { x: 0, y: 1, z: 0 },
+        cameraLock: 'y',
         rotationAxis: 'y',
         lightIntensity: {
-          ambient: 0,
           dirFront: 0,
           spotFront: 1,
-          dirTop: 1,
-          dirBottom: 1
-        }
+          dirTop: 3
+        },
+        icon: icons.bugatti
       },
       ChevroletCorvetteV8: {
         cosModelName: 'chevroletCorvetteV8-draco.glb',
-        cameraOffset: 120
+        icon: icons.chevrolet
       },
       CumminsX15Truck: {
-        cosModelName: 'cumminsX15Truck-draco.glb',
-        cameraOffset: 380
+        cosModelName: 'cumminsX15Truck-draco.glb'
       },
       DodgeChallengerV8: {
         cosModelName: 'dodgeChallengerV8-draco.glb',
-        cameraOffset: 410
+        icon: icons.dodge
+      },
+      DodgeMagnumV10: {
+        cosModelName: 'dodgeMagnumV10-draco.glb',
+        icon: icons.dodge,
+        badge: '新'
       },
       FordMotorEngine: {
         cosModelName: 'fordMotorEngine-draco.glb',
-        cameraOffset: 20,
-        cameraLock: { x: 0, y: 1, z: 0 },
+        cameraLock: 'y',
         lightIntensity: {
-          ambient: 0,
           dirFront: 0,
-          spotFront: 0,
           dirTop: 2,
           dirBottom: 2
         },
-        rotationAxis: 'y'
+        rotationAxis: 'y',
+        icon: icons.ford
       },
       IndustrialDiesel: {
         cosModelName: 'industrialDiesel-draco.glb',
-        cameraOffset: 250
+        icon: icons.gm
+      },
+      MarinePropulsion: {
+        cosModelName: 'marinePropulsion-draco.glb',
+        badge: '新'
       },
       NissanAltimaHybrid4Cylinder: {
         cosModelName: 'nissanAltimaHybrid4Cylinder-draco.glb',
-        cameraOffset: 90
+        icon: icons.nissan
+      },
+      CarEngine1: {
+        cosModelName: 'carEngine1-draco.glb'
+      },
+      CarEngine2: {
+        cosModelName: 'carEngine2-draco.glb'
+      },
+      CarEngine3: {
+        cosModelName: 'carEngine3-draco.glb',
+        lightIntensity: {
+          dirFront: 3,
+          spotFront: 0,
+          dirBottom: 3
+        }
       },
       V12CarEngine: {
-        cosModelName: 'v12CarEngine-draco.glb',
-        cameraOffset: 120
+        cosModelName: 'v12CarEngine-draco.glb'
       },
       V8CarEngine: {
-        cosModelName: 'v8CarEngine-draco.glb',
-        cameraOffset: 60
+        cosModelName: 'v8CarEngine-draco.glb'
+      }
+    },
+    Automobiles: {
+      Batmobile: {
+        cosModelName: 'batmobile-draco.glb',
+        cameraOffset: 360,
+        rotationAxis: 'y',
+        cameraLock: 'y',
+        icon: icons.batman,
+        badge: '新'
+      },
+      DefenderWorksV8: {
+        cosModelName: 'defenderWorksV8-draco.glb',
+        rotationAxis: 'y',
+        cameraLock: 'y',
+        cameraOffset: 4000,
+        icon: icons.landrover,
+        badge: '新'
+      },
+      Defender90Prep: {
+        cosModelName: 'defender90Prep-draco.glb',
+        rotationAxis: 'y',
+        cameraLock: 'y',
+        cameraOffset: 4,
+        cameraPosition: {
+          y: 1
+        },
+        icon: icons.landrover,
+        badge: '新'
+      },
+      Defender90V8: {
+        cosModelName: 'defender90V8-draco.glb',
+        cameraLock: 'y',
+        rotationAxis: 'y',
+        cameraOffset: 3800,
+        icon: icons.landrover,
+        badge: '新'
+      },
+      RangeRover: {
+        cosModelName: 'rangeRoverTd6HSE-draco.glb',
+        rotationAxis: 'y',
+        cameraLock: 'y',
+        cameraOffset: 410,
+        icon: icons.landrover,
+        badge: '新'
+      }
+    },
+    Misc: {
+      NASAShuttleLaunchPad: {
+        cosModelName: 'NASAShuttleLaunchPad-draco.glb',
+        cameraOffset: 3600,
+        cameraPosition: {
+          z: 0
+        },
+        icon: 'i-ph-rocket-launch-duotone',
+        badge: '新'
+      },
+      PacmanArcadePocket: {
+        cosModelName: 'pacmanArcadePocket-draco.glb',
+        icon: 'i-ph-game-controller-duotone',
+        badge: '新'
       }
     }
   }
@@ -99,10 +173,10 @@ export const useSelectModel = () => {
     return null
   }
 
-  const selectedGroup = models[getGroupName(route.query.model?.toString() as string)] || models.Engine
+  const selectedGroup = models[getGroupName(route.query.model?.toString() as string)] || models.Engines
   const selectedModel = selectedGroup[route.query.model?.toString() as string] || selectedGroup.Duramax
-  const needNavigation = route.query.navigation ? (route.query.navigation?.toString().toLowerCase() === 'true') : true
   const needBottomButton = route.query.button ? (route.query.button?.toString().toLowerCase() === 'true') : true
+  const needZoom = route.query.button ? (route.query.zoom?.toString().toLowerCase() === 'true') : true
 
-  return { selectedGroup, selectedModel, models, needNavigation, needBottomButton }
+  return { selectedGroup, selectedModel, models, needBottomButton, needZoom }
 }

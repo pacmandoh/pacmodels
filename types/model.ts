@@ -1,16 +1,19 @@
 export interface Model {
   cosModelName: string,
-  cameraOffset: number,
-  cameraPosition?: { x: number, y: number, z: number },
-  cameraLock?: { x: number, y: number, z: number },
+  cameraOffset?: number,
+  cameraPosition?: { x?: number, y?: number, z?: number },
+  cameraLock?: string,
   lightIntensity?: {
-    ambient: number,
-    dirFront: number,
-    spotFront: number,
-    dirTop: number,
-    dirBottom: number
+    ambient?: number,
+    dirFront?: number,
+    spotFront?: number,
+    dirTop?: number,
+    dirBottom?: number,
+    spotShadow?: number
   },
-  rotationAxis?: string
+  rotationAxis?: string,
+  icon?: string,
+  badge?: string
 }
 
 export interface Models {
