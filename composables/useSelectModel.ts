@@ -28,7 +28,8 @@ export const useSelectModel = () => {
         cameraLock: 'y',
         rotationAxis: 'y',
         icon: icons.astonmartin,
-        badge: '新'
+        badge: '新',
+        shadow: false
       },
       BugattiW16: {
         cosModelName: 'bugattiW16-draco.glb',
@@ -175,8 +176,6 @@ export const useSelectModel = () => {
 
   const selectedGroup = models[getGroupName(route.query.model?.toString() as string)] || models.Engines
   const selectedModel = selectedGroup[route.query.model?.toString() as string] || selectedGroup.Duramax
-  const needBottomButton = route.query.button ? (route.query.button?.toString().toLowerCase() === 'true') : true
-  const needZoom = route.query.zoom ? (route.query.zoom?.toString().toLowerCase() === 'true') : true
 
-  return { selectedGroup, selectedModel, models, needBottomButton, needZoom }
+  return { selectedGroup, selectedModel, models }
 }

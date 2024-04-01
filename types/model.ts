@@ -13,7 +13,8 @@ export interface Model {
   },
   rotationAxis?: string,
   icon?: string,
-  badge?: string
+  badge?: string,
+  shadow?: boolean
 }
 
 export interface Models {

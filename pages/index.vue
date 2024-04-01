@@ -1,6 +1,6 @@
 <template>
   <ClientOnly>
-    <div v-if="!ready" class="sk-cube-grid">
+    <div v-if="!ready && progress !== 100" class="sk-cube-grid">
       <div class="sk-cube sk-cube-1" />
       <div class="sk-cube sk-cube-2" />
       <div class="sk-cube sk-cube-3" />
@@ -10,12 +10,33 @@
       <div class="sk-cube sk-cube-7" />
       <div class="sk-cube sk-cube-8" />
       <div class="sk-cube sk-cube-9" />
-      <UMeter :value="progress" label="模型加载中..." icon="i-heroicons-globe-asia-australia-solid" indicator />
+      <UMeter
+        v-if="progress !== 100"
+        :value="progress"
+        label="模型请求中..."
+        icon="i-heroicons-globe-asia-australia-solid"
+        indicator
+      />
+    </div>
+    <div v-if="!ready && progress === 100" class="absolute m-auto top-0 bottom-0 left-0 right-0 h-[9rem] w-[9rem] flex items-center">
+      <UProgress
+        :max="['模型解包中...']"
+        animation="carousel"
+        class="px-2 pt-3 pb-3"
+        color="orange"
+        indicator
+      >
+        <template #step-0="{ step }">
+          <span class="text-orange-500 flex items-center justify-center gap-1">
+            <UIcon name="i-ph-code-duotone" /> {{ step }}
+          </span>
+        </template>
+      </UProgress>
     </div>
     <div class="overflow-hidden h-full w-full bg-transparent">
       <canvas id="pacdocs-engine" ref="el" :style="{ display: ready ? 'block' : 'none' }" />
     </div>
-    <div v-if="needBottomButton" class="absolute bottom-2 right-2">
+    <div v-if="!nobutton" class="absolute bottom-2 right-2">
       <div class="flex flex-row gap-0">
         <UTooltip text="GitHub">
           <UButton
@@ -121,7 +142,13 @@ defineShortcuts({
   }
 })
 const runtimeConfig = useRuntimeConfig()
-const { selectedGroup, selectedModel, needBottomButton, needZoom } = useSelectModel()
+const { selectedGroup, selectedModel } = useSelectModel()
+const { nobutton, nozoom, noshadow } = useRouteParams()
+console.groupCollapsed('[route.params | 路由参数信息]:')
+console.log('➜ [route.params.nobutton]: ', nobutton)
+console.log('➜ [route.params.nozoom]: ', nozoom)
+console.log('➜ [route.params.noshadow]: ', noshadow)
+console.groupEnd()
 const { links } = useNavigation()
 const el = ref<HTMLElement | null>(null)
 const { toggle } = useFullscreen(el)
@@ -141,6 +168,7 @@ const sizes = computed(() => {
   return { width: width.value, height: height.value }
 })
 const ready = ref(false)
+const modelShadow = selectedModel.shadow || true
 
 let clearScene: () => void
 let updateSizes: () => void
@@ -170,8 +198,10 @@ const renderModel = async (): Promise<void> => {
     logarithmicDepthBuffer: true
   }))
   renderer.setClearColor(0x000000, 0)
-  renderer.shadowMap.enabled = true // enable shadow
-  renderer.shadowMap.type = Three.PCFSoftShadowMap
+  if (!noshadow && modelShadow) {
+    renderer.shadowMap.enabled = !noshadow && modelShadow
+    renderer.shadowMap.type = Three.PCFSoftShadowMap
+  }
   renderer.setSize(sWidth, sHeight)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
@@ -187,11 +217,13 @@ const renderModel = async (): Promise<void> => {
             child.material.depthTest = true
             child.material.depthWrite = true
             child.material.side = 0
-            child.material.shadowSide = Three.BackSide
+            if (!noshadow && modelShadow) child.material.shadowSide = Three.BackSide
             if (child.material.opacity !== 1) child.material.depthWrite = false
           }
-          child.castShadow = true
-          child.receiveShadow = true
+          if (!noshadow && modelShadow) {
+            child.castShadow = true
+            child.receiveShadow = true
+          }
         })
 
         // Computed
@@ -206,11 +238,17 @@ const renderModel = async (): Promise<void> => {
         if (!cameraOffset) {
           cameraOffset = Math.max(size.x, size.y, size.z)
         }
-        console.log('==> cameraOffset: ', cameraOffset)
 
         // Lights
         const lights: any = []
-        const { ambient = 0, dirFront = 1, spotFront = 0, dirTop = 1, dirBottom = 1, spotShadow = 5 } = selectedModel.lightIntensity || {}
+        const {
+          ambient = 0,
+          dirFront = !noshadow && modelShadow ? 1 : 3,
+          spotFront = 0,
+          dirTop = !noshadow && modelShadow ? 1 : 3,
+          dirBottom = 1,
+          spotShadow = 5
+        } = selectedModel.lightIntensity || {}
         const rotationAxisMap: RotationAxisMap = {
           top: { x: track(new Three.Vector3(cameraOffset, 0, 0)), y: track(new Three.Vector3(0, cameraOffset, 0)), z: track(new Three.Vector3(0, 0, cameraOffset)) },
           bottom: { x: track(new Three.Vector3(- cameraOffset, 0, 0)), y: track(new Three.Vector3(0, - cameraOffset, 0)), z: track(new Three.Vector3(0, 0, - cameraOffset)) },
@@ -220,44 +258,47 @@ const renderModel = async (): Promise<void> => {
             z: track(new Three.Vector3(0, cameraOffset, cameraOffset * 2))
           }
         }
+        const spotShadowLight = !noshadow && modelShadow ? { type: 'SpotLight', intensity: spotShadow, angle: Math.PI * 0.2, decay: 0, label: 'castShadow', castShadow: true, position: rotationAxisMap.spotShadowPosition[selectedModel.rotationAxis as string || 'z'] } : undefined
         const lightConfig: LightConfig = [
           { type: 'AmbientLight', intensity: ambient },
           { type: 'DirectionalLight', intensity: dirFront, label: 'front' },
           { type: 'DirectionalLight', intensity: dirTop, position: rotationAxisMap.top[selectedModel.rotationAxis as string || 'z'] },
           { type: 'DirectionalLight', intensity: dirBottom, position: rotationAxisMap.bottom[selectedModel.rotationAxis as string || 'z'] },
           { type: 'SpotLight', intensity: spotFront, angle: Math.PI * 0.2, decay: 0, label: 'front' },
-          { type: 'SpotLight', intensity: spotShadow, angle: Math.PI * 0.2, decay: 0, label: 'castShadow', castShadow: true, position: rotationAxisMap.spotShadowPosition[selectedModel.rotationAxis as string || 'z'] }
+          spotShadowLight
         ]
         lightConfig.forEach((config) => {
-          if (config.intensity !== 0) {
-            //@ts-ignore
-            const light = track(new Three[config.type](0xffffff, config.intensity))
-            if (config.position) {
-              light.position.copy(config.position)
-            }
-            if (config.angle) {
-              light.angle = config.angle
-            }
-            if (config.decay !== undefined) {
-              light.decay = config.decay
-            }
-            if (config.label) {
-              light.label = config.label
-            }
-            if (config.castShadow) {
-              light.castShadow = true
-              light.shadow.mapSize.width = 1024
-              light.shadow.mapSize.height = 1024
-              light.shadow.camera.bottom = - cameraOffset
-              light.shadow.camera.top = cameraOffset
-              light.shadow.camera.right = cameraOffset
-              light.shadow.camera.left = - cameraOffset
-              light.shadow.camera.far = cameraOffset * 100
-              light.shadow.camera.near = cameraOffset / 100
-              light.shadow.camera.castShadow = true
+          if (config) {
+            if (config.intensity !== 0) {
+              //@ts-ignore
+              const light = track(new Three[config.type](0xffffff, config.intensity))
+              if (config.position) {
+                light.position.copy(config.position)
+              }
+              if (config.angle) {
+                light.angle = config.angle
+              }
+              if (config.decay !== undefined) {
+                light.decay = config.decay
+              }
+              if (config.label) {
+                light.label = config.label
+              }
+              if (config.castShadow) {
+                light.castShadow = true
+                light.shadow.mapSize.width = 1024
+                light.shadow.mapSize.height = 1024
+                light.shadow.camera.bottom = - cameraOffset
+                light.shadow.camera.top = cameraOffset
+                light.shadow.camera.right = cameraOffset
+                light.shadow.camera.left = - cameraOffset
+                light.shadow.camera.far = cameraOffset * 100
+                light.shadow.camera.near = cameraOffset / 100
+                light.shadow.camera.castShadow = true
               // scene.add(new Three.CameraHelper(light.shadow.camera))
+              }
+              lights.push(light)
             }
-            lights.push(light)
           }
         })
         lights.forEach((light: any) => { if (!light.castShadow) scene.add(light) })
@@ -279,7 +320,7 @@ const renderModel = async (): Promise<void> => {
 
         // Controls
         const controls = track(new OrbitControls(camera, canvas))
-        controls.enableZoom = needZoom
+        controls.enableZoom = !nozoom
         controls.enableDamping = true
         controls.enablePan = false
         // Lock Y Axis
@@ -295,11 +336,14 @@ const renderModel = async (): Promise<void> => {
         container.add(model)
         scene.add(container)
         container.position.set(0, 0, 0)
-        const lightHolder = track(new Three.Group())
-        lights.forEach((light: any) => {
-          if (light.castShadow) lightHolder.add(light)
-        })
-        scene.add(lightHolder)
+        let lightHolder: Three.Group
+        if (!noshadow && modelShadow) {
+          lightHolder = track(new Three.Group())
+          lights.forEach((light: any) => {
+            if (light.castShadow) lightHolder.add(light)
+          })
+          scene.add(lightHolder)
+        }
 
         // Render & Animation
         const tick = (): void => {
@@ -323,7 +367,7 @@ const renderModel = async (): Promise<void> => {
               light.position.copy(cameraPosition)
             }
           })
-          lightHolder.quaternion.copy(camera.quaternion)
+          if (lightHolder) lightHolder.quaternion.copy(camera.quaternion)
         }
 
         // Adapting function
@@ -346,6 +390,12 @@ const renderModel = async (): Promise<void> => {
             window.gc()
           }
         }
+
+        console.groupCollapsed('[model.info | 模型信息]:')
+        console.log('➜ [cameraOffset]: ', cameraOffset)
+        console.log('➜ [scene.light]: ', lights)
+        console.log('➜ [modelShadow]: ', modelShadow)
+        console.groupEnd()
 
         tick()
         reslove()
@@ -399,9 +449,8 @@ onBeforeUnmount(() => {
   right: 0;
   top: 0;
   bottom: 0;
-  width: 7em;
-  height: 7em;
-  margin: auto;
+  width: 9em;
+  height: 9em;
 }
 .sk-cube {
   width: 33%;

@@ -16,4 +16,4 @@ export interface LightConfig extends Array<{
   decay?: number,
   label?: string,
   castShadow?: boolean
-}> {}
+} | undefined> {}

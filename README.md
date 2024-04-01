@@ -7,14 +7,15 @@ You can select the models you want through routing parameters, whether to displa
 ### Parameters include:
 
 #### group (string) (Optional)
-This parameter **doesn't need to be filled in!** The model parameter you input will automatically recognize its group.
-- Engines (default)
-- Automobiles
-- Misc
-- To be added...
+> [!WARNING]
+> This parameter **doesn't need to be filled in!** The `?model=` you input will automatically recognize its group.
+> - Engines (default)
+> - Automobiles
+> - Misc
+> - To be added...
 
-#### model (string) (!case-sensitive ⚠️)
-- Engines
+#### model (string) (⚠️ case-sensitive ⚠️)
+- Engines (See [above](#group-string-optional), no input required)
   - Duramax (default)
   - AudiS8
   - AudiR8
@@ -45,26 +46,33 @@ This parameter **doesn't need to be filled in!** The model parameter you input w
   - NASAShuttleLaunchPad
   - PacmanArcadePocket
 
-#### button (boolean) (case-insensitive)
-This parameter determines whether to display the bottom buttons. (including navigation)
-- true (default)
-- false
+#### nobutton
+This parameter determines whether to display the bottom buttons.
+> [!WARNING]
+> If the route params includes `nobutton` the bottom button will not be displayed regardless of its value, unless `nobutton=false` in which case the bottom button will be shown.
+- false (default)
 
-#### zoom (boolean) (case-insensitive)
-This parameter determines the feasibility of model scaling
-- true (default)
-- false
+#### nozoom
+This parameter determines the feasibility of model scaling.
+> [!WARNING]
+> `nozoom` the same as stated above: `nobutton`
+- false (default)
+
+#### noshadow
+This parameter determines whether to render the shadow or not.
+As previously stated.
+- false (default)
 
 ## examples 📃
 You can view the model by visiting the website directly.
-[https://model.crybabyaq.love/?model=AudiS8&button=false](https://model.crybabyaq.love/?model=AudiS8&button=false)
+[https://model.crybabyaq.love/?model=AudiS8&nobutton](https://model.crybabyaq.love/?model=AudiS8&nobutton)
 
 Similarly, you can also embed it in your personal website or web project through `<iframe />`:
 ```html
 <iframe
   width="100%"
   height="100%"
-  src="https://model.crybabyaq.love/?model=audiS8&button=false"
+  src="https://model.crybabyaq.love/?model=audiS8&nobutton"
   title="Audi S8 V8 Engine"
   frameborder="0"
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope;"
@@ -83,13 +91,19 @@ All car engine models are downloaded or purchased from [Sketchfab](https://sketc
 
 ## TODO 📝
 
-[] Supporting the glTF viewer, allowing for the preview of locally uploaded glTF files
+### Features:
 
-[] To enhance individual models, the addition of a ground surface can be incorporated
+[ ] Supporting the glTF viewer, allowing for the preview of locally uploaded glTF files
 
-[] Add a notification to provide an indication when the model file is large in size
+[ ] To enhance individual models, the addition of a ground surface can be incorporated
 
-[] Display the original author of the model and a Sketchfab link at the top when showcasing the model
+[ ] Add a notification to provide an indication when the model file is large in size
+
+[ ] Display the original author of the model and a Sketchfab link at the top when showcasing the model
+
+### Fix:
+
+[ ] When selecting a model for page navigation, include the existing parameters for a seamless transition.
 
 ## LICENSE
 
