@@ -93,17 +93,17 @@ All car engine models are downloaded or purchased from [Sketchfab](https://sketc
 
 ### Features:
 
-[ ] Supporting the glTF viewer, allowing for the preview of locally uploaded glTF files
+- [ ] Supporting the glTF viewer, allowing for the preview of locally uploaded glTF files
 
-[ ] To enhance individual models, the addition of a ground surface can be incorporated
+- [ ] To enhance individual models, the addition of a ground surface can be incorporated
 
-[ ] Add a notification to provide an indication when the model file is large in size
+- [ ] Add a notification to provide an indication when the model file is large in size
 
-[ ] Display the original author of the model and a Sketchfab link at the top when showcasing the model
+- [ ] Display the original author of the model and a Sketchfab link at the top when showcasing the model
 
 ### Fix:
 
-[ ] When selecting a model for page navigation, include the existing parameters for a seamless transition.
+- [x] When selecting a model for page navigation, include the existing parameters for a seamless transition.
 
 ## LICENSE
 
