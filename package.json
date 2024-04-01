@@ -2,7 +2,7 @@
   "name": "model",
   "private": true,
   "type": "module",
-  "version": "0.1.4-beta.3",
+  "version": "0.1.4-beta.4",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
