@@ -35,6 +35,7 @@ export const useSelectModel = () => {
         cosModelName: 'bugattiW16-draco.glb',
         cameraLock: 'y',
         rotationAxis: 'y',
+        cameraOffset: 1.3,
         lightIntensity: {
           dirFront: 0,
           spotFront: 1,
