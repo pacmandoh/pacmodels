@@ -36,7 +36,7 @@
     <div class="overflow-hidden h-full w-full bg-transparent">
       <canvas id="pacdocs-engine" ref="el" :style="{ display: ready ? 'block' : 'none' }" />
     </div>
-    <div v-if="!nobutton" class="absolute bottom-2 right-2">
+    <div v-if="!routeParams.nobutton" class="absolute bottom-2 right-2">
       <div class="flex flex-row gap-0">
         <UTooltip text="GitHub">
           <UButton
@@ -143,11 +143,11 @@ defineShortcuts({
 })
 const runtimeConfig = useRuntimeConfig()
 const { selectedGroup, selectedModel } = useSelectModel()
-const { nobutton, nozoom, noshadow } = useRouteParams()
+const { routeParams } = useRouteParams()
 console.groupCollapsed('[route.params | 路由参数信息]:')
-console.log('➜ [route.params.nobutton]: ', nobutton)
-console.log('➜ [route.params.nozoom]: ', nozoom)
-console.log('➜ [route.params.noshadow]: ', noshadow)
+console.log('➜ [route.params.nobutton]: ', routeParams.nobutton)
+console.log('➜ [route.params.nozoom]: ', routeParams.nozoom)
+console.log('➜ [route.params.noshadow]: ', routeParams.noshadow)
 console.groupEnd()
 const { links } = useNavigation()
 const el = ref<HTMLElement | null>(null)
@@ -198,8 +198,8 @@ const renderModel = async (): Promise<void> => {
     logarithmicDepthBuffer: true
   }))
   renderer.setClearColor(0x000000, 0)
-  if (!noshadow && modelShadow) {
-    renderer.shadowMap.enabled = !noshadow && modelShadow
+  if (!routeParams.noshadow && modelShadow) {
+    renderer.shadowMap.enabled = !routeParams.noshadow && modelShadow
     renderer.shadowMap.type = Three.PCFSoftShadowMap
   }
   renderer.setSize(sWidth, sHeight)
@@ -217,10 +217,10 @@ const renderModel = async (): Promise<void> => {
             child.material.depthTest = true
             child.material.depthWrite = true
             child.material.side = 0
-            if (!noshadow && modelShadow) child.material.shadowSide = Three.BackSide
+            if (!routeParams.noshadow && modelShadow) child.material.shadowSide = Three.BackSide
             if (child.material.opacity !== 1) child.material.depthWrite = false
           }
-          if (!noshadow && modelShadow) {
+          if (!routeParams.noshadow && modelShadow) {
             child.castShadow = true
             child.receiveShadow = true
           }
@@ -243,9 +243,9 @@ const renderModel = async (): Promise<void> => {
         const lights: any = []
         const {
           ambient = 0,
-          dirFront = !noshadow && modelShadow ? 1 : 3,
+          dirFront = !routeParams.noshadow && modelShadow ? 1 : 3,
           spotFront = 0,
-          dirTop = !noshadow && modelShadow ? 1 : 3,
+          dirTop = !routeParams.noshadow && modelShadow ? 1 : 3,
           dirBottom = 1,
           spotShadow = 5
         } = selectedModel.lightIntensity || {}
@@ -258,7 +258,7 @@ const renderModel = async (): Promise<void> => {
             z: track(new Three.Vector3(0, cameraOffset, cameraOffset * 2))
           }
         }
-        const spotShadowLight = !noshadow && modelShadow ? { type: 'SpotLight', intensity: spotShadow, angle: Math.PI * 0.2, decay: 0, label: 'castShadow', castShadow: true, position: rotationAxisMap.spotShadowPosition[selectedModel.rotationAxis as string || 'z'] } : undefined
+        const spotShadowLight = !routeParams.noshadow && modelShadow ? { type: 'SpotLight', intensity: spotShadow, angle: Math.PI * 0.2, decay: 0, label: 'castShadow', castShadow: true, position: rotationAxisMap.spotShadowPosition[selectedModel.rotationAxis as string || 'z'] } : undefined
         const lightConfig: LightConfig = [
           { type: 'AmbientLight', intensity: ambient },
           { type: 'DirectionalLight', intensity: dirFront, label: 'front' },
@@ -320,7 +320,7 @@ const renderModel = async (): Promise<void> => {
 
         // Controls
         const controls = track(new OrbitControls(camera, canvas))
-        controls.enableZoom = !nozoom
+        controls.enableZoom = !routeParams.nozoom
         controls.enableDamping = true
         controls.enablePan = false
         // Lock Y Axis
@@ -337,7 +337,7 @@ const renderModel = async (): Promise<void> => {
         scene.add(container)
         container.position.set(0, 0, 0)
         let lightHolder: Three.Group
-        if (!noshadow && modelShadow) {
+        if (!routeParams.noshadow && modelShadow) {
           lightHolder = track(new Three.Group())
           lights.forEach((light: any) => {
             if (light.castShadow) lightHolder.add(light)

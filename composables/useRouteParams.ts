@@ -10,13 +10,12 @@ export const useRouteParams = () => {
       return params ? (params === 'false' ? false : true) : true
     }
   }
-  const nobutton = getParamsBoolean(route.query.nobutton)
-  const nozoom = getParamsBoolean(route.query.nozoom)
-  const noshadow = getParamsBoolean(route.query.noshadow)
 
-  return {
-    nobutton,
-    nozoom,
-    noshadow
-  }
+  const routeParams = reactive({
+    nobutton: getParamsBoolean(route.query.nobutton),
+    nozoom: getParamsBoolean(route.query.nozoom),
+    noshadow: getParamsBoolean(route.query.noshadow)
+  })
+
+  return { routeParams }
 }
