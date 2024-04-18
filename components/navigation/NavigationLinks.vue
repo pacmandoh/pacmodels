@@ -23,8 +23,8 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { twMerge } from 'tailwind-merge'
-import { getULinkProps } from '#ui/utils'
 import type { NavigationLink } from '../../types'
+import { getULinkProps } from '#ui/utils'
 
 const config = {
   wrapper: 'space-y-3',

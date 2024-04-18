@@ -39,9 +39,9 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { twJoin } from 'tailwind-merge'
-import type { AccordionItem } from '#ui/types'
 import type { NavigationTree } from '../../types'
-import { accordion as accordionConfig } from '#ui/ui.config'
+import type { AccordionItem } from '#ui/types'
+import type { accordion as accordionConfig } from '#ui/ui.config'
 
 const appConfig = useAppConfig()
 
@@ -119,7 +119,7 @@ const { ui, attrs } = useUI('navigation.accordion', toRef(props, 'ui'), config, 
 
 // Computed
 
-const items = computed(() => props.links?.map(link => {
+const items = computed(() => props.links?.map((link) => {
   const defaultOpen = !props.defaultOpen || (typeof props.defaultOpen === 'number' && props.level < props.defaultOpen) || (link.to && route.path.startsWith(link.to.toString()))
 
   return {

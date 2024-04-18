@@ -9,11 +9,11 @@ export interface RotationAxisMap {
 }
 
 export interface LightConfig extends Array<{
-  type: string,
-  intensity: number,
-  position?: Vector3,
-  angle?: number,
-  decay?: number,
-  label?: string,
+  type: string
+  intensity: number
+  position?: Vector3
+  angle?: number
+  decay?: number
+  label?: string
   castShadow?: boolean
 } | undefined> {}

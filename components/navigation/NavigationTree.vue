@@ -67,7 +67,8 @@ const groups = computed<NavigationGroup[]>(() => {
 
     if (group.type === type) {
       group.children.push(link)
-    } else {
+    }
+    else {
       groups.push(group)
       group = { type, children: [link] }
     }

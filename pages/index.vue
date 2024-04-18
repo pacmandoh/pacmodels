@@ -209,7 +209,7 @@ const renderModel = async (): Promise<void> => {
 
   // Main
   await Promise.all([
-    new Promise<void>((reslove) =>
+    new Promise<void>(reslove =>
       loader.load(BASE + MODEL, (gltf: { scene: Three.Object3D }) => {
         const model = track(gltf.scene)
         model.traverse((child: Three.Mesh) => {
@@ -251,7 +251,7 @@ const renderModel = async (): Promise<void> => {
         } = selectedModel.lightIntensity || {}
         const rotationAxisMap: RotationAxisMap = {
           top: { x: track(new Three.Vector3(cameraOffset, 0, 0)), y: track(new Three.Vector3(0, cameraOffset, 0)), z: track(new Three.Vector3(0, 0, cameraOffset)) },
-          bottom: { x: track(new Three.Vector3(- cameraOffset, 0, 0)), y: track(new Three.Vector3(0, - cameraOffset, 0)), z: track(new Three.Vector3(0, 0, - cameraOffset)) },
+          bottom: { x: track(new Three.Vector3(-cameraOffset, 0, 0)), y: track(new Three.Vector3(0, -cameraOffset, 0)), z: track(new Three.Vector3(0, 0, -cameraOffset)) },
           spotShadowPosition: {
             x: track(new Three.Vector3(cameraOffset * 2, 0, cameraOffset)),
             y: track(new Three.Vector3(cameraOffset, cameraOffset * 2, 0)),
@@ -270,7 +270,7 @@ const renderModel = async (): Promise<void> => {
         lightConfig.forEach((config) => {
           if (config) {
             if (config.intensity !== 0) {
-              //@ts-ignore
+              // @ts-expect-error missing types
               const light = track(new Three[config.type](0xffffff, config.intensity))
               if (config.position) {
                 light.position.copy(config.position)
@@ -288,10 +288,10 @@ const renderModel = async (): Promise<void> => {
                 light.castShadow = true
                 light.shadow.mapSize.width = 1024
                 light.shadow.mapSize.height = 1024
-                light.shadow.camera.bottom = - cameraOffset
+                light.shadow.camera.bottom = -cameraOffset
                 light.shadow.camera.top = cameraOffset
                 light.shadow.camera.right = cameraOffset
-                light.shadow.camera.left = - cameraOffset
+                light.shadow.camera.left = -cameraOffset
                 light.shadow.camera.far = cameraOffset * 100
                 light.shadow.camera.near = cameraOffset / 100
                 light.shadow.camera.castShadow = true
@@ -301,15 +301,17 @@ const renderModel = async (): Promise<void> => {
             }
           }
         })
-        lights.forEach((light: any) => { if (!light.castShadow) scene.add(light) })
+        lights.forEach((light: any) => {
+          if (!light.castShadow) scene.add(light)
+        })
 
         // Camera
         const camera = track(new Three.PerspectiveCamera(45, sWidth / sHeight, cameraOffset / 100, cameraOffset * 100))
         const cameraLock = selectedModel.cameraLock || 'z'
         const cameraLockMap: Vector3Map = {
-          'x': track(new Three.Vector3(1, 0, 0)),
-          'y': track(new Three.Vector3(0, 1, 0)),
-          'z': track(new Three.Vector3(0, 0, 1))
+          x: track(new Three.Vector3(1, 0, 0)),
+          y: track(new Three.Vector3(0, 1, 0)),
+          z: track(new Three.Vector3(0, 0, 1))
         }
         camera.up.copy(cameraLockMap[cameraLock])
         const { x = cameraOffset, y = cameraOffset, z = cameraOffset } = selectedModel.cameraPosition || {}
@@ -351,7 +353,8 @@ const renderModel = async (): Promise<void> => {
           if (selectedModel.rotationAxis) {
             if (selectedModel.rotationAxis === 'x') container.rotation.x = 0.5 * elapsedTime
             if (selectedModel.rotationAxis === 'y') container.rotation.y = 0.5 * elapsedTime
-          } else {
+          }
+          else {
             container.rotation.z = 0.5 * elapsedTime
           }
           // Update controls
@@ -410,7 +413,9 @@ const renderModel = async (): Promise<void> => {
 onMounted(() =>
   Promise.all([]).then(() => {
     void renderModel()
-    watch(ready, () => { if (ready.value) watch(sizes, () => updateSizes()) })
+    watch(ready, () => {
+      if (ready.value) watch(sizes, () => updateSizes())
+    })
   })
 )
 

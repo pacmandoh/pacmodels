@@ -18,7 +18,7 @@ export const useNavigation = () => {
     children: []
   }]
 
-  const getPreRouteParams = (modelName: string, params: Object) => {
+  const getPreRouteParams = (modelName: string, params: object) => {
     const routeString = []
     routeString.push(`model=${modelName}`)
     Object.keys(params).forEach((key: string) => {
@@ -29,7 +29,7 @@ export const useNavigation = () => {
 
   Object.values(models).forEach((group, index) => {
     Object.keys(group).forEach((modelName) => {
-      //@ts-ignore
+      // @ts-expect-error missing types
       links[index].children.push({
         label: modelName,
         icon: group[modelName].icon || links[index].icon,

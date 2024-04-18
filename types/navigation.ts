@@ -3,7 +3,7 @@ import type { Link as ULink, Badge } from '#ui/types'
 export interface Link extends ULink {
   label: string
   class?: string
-  click?: Function
+  click?: () => void
 }
 
 export interface NavigationLink extends Link {

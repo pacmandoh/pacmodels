@@ -12,7 +12,8 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: [
     '@vueuse/nuxt',
-    '@nuxt/ui'
+    '@nuxt/ui',
+    '@nuxt/eslint'
   ],
   colorMode: {
     preference: 'light',
@@ -24,6 +25,13 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       version: pkg.version
+    }
+  },
+  eslint: {
+    config: {
+      stylistic: {
+        commaDangle: 'never'
+      }
     }
   }
 })

@@ -6,7 +6,8 @@ export const useRouteParams = () => {
   const getParamsBoolean = (params: LocationQueryValue | LocationQueryValue[]) => {
     if (!params) {
       return params === null ? true : false
-    } else {
+    }
+    else {
       return params ? (params === 'false' ? false : true) : true
     }
   }
