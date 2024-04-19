@@ -24,6 +24,7 @@
     "@nuxt/devtools": "^1.2.0",
     "@nuxt/eslint": "^0.3.8",
     "@types/three": "^0.163.0",
+    "eslint": "^9.1.0",
     "bumpp": "^9.4.0",
     "changelogithub": "^0.13.7",
     "nuxt": "^3.11.2",
