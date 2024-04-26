@@ -23,7 +23,7 @@
     "@iconify-json/simple-icons": "^1.1.100",
     "@nuxt/devtools": "^1.2.0",
     "@nuxt/eslint": "^0.3.10",
-    "@types/three": "^0.163.0",
+    "@types/three": "^0.164.0",
     "eslint": "^9.1.1",
     "bumpp": "^9.4.0",
     "changelogithub": "^0.13.7",
@@ -37,6 +37,6 @@
     "@vueuse/components": "^10.9.0",
     "@vueuse/core": "^10.9.0",
     "@vueuse/nuxt": "^10.9.0",
-    "three": "^0.164.0"
+    "three": "^0.164.1"
   }
 }
