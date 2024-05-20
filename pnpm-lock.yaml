@@ -37,8 +37,8 @@ importers:
         specifier: ^1.1.13
         version: 1.1.13
       '@iconify-json/simple-icons':
-        specifier: ^1.1.101
-        version: 1.1.101
+        specifier: ^1.1.102
+        version: 1.1.102
       '@nuxt/devtools':
         specifier: ^1.3.1
         version: 1.3.1(@unocss/reset@0.58.6)(floating-vue@5.2.2(@nuxt/kit@3.11.2(rollup@4.14.3))(vue@3.4.27(typescript@5.4.3)))(fuse.js@6.6.2)(nuxt@3.11.2(@parcel/watcher@2.4.1)(@types/node@20.12.7)(@unocss/reset@0.58.6)(encoding@0.1.13)(eslint@9.3.0)(floating-vue@5.2.2(@nuxt/kit@3.11.2(rollup@4.14.3))(vue@3.4.27(typescript@5.4.3)))(fuse.js@6.6.2)(ioredis@5.4.1)(optionator@0.9.3)(rollup@4.14.3)(terser@5.30.3)(typescript@5.4.3)(unocss@0.58.6(postcss@8.4.38)(rollup@4.14.3)(vite@5.2.9(@types/node@20.12.7)(terser@5.30.3)))(vite@5.2.9(@types/node@20.12.7)(terser@5.30.3))(vue-tsc@2.0.19(typescript@5.4.3)))(rollup@4.14.3)(unocss@0.58.6(postcss@8.4.38)(rollup@4.14.3)(vite@5.2.9(@types/node@20.12.7)(terser@5.30.3)))(vite@5.2.9(@types/node@20.12.7)(terser@5.30.3))(vue@3.4.27(typescript@5.4.3))
@@ -531,8 +531,8 @@ packages:
   '@iconify-json/ph@1.1.13':
     resolution: {integrity: sha512-xtM4JJ63HCKj09WRqrBswXiHrpliBlqboWSZH8odcmqYXbvIFceU9/Til4V+MQr6+MoUC+KB72cxhky2+A6r/g==}
 
-  '@iconify-json/simple-icons@1.1.101':
-    resolution: {integrity: sha512-7h7iUvCok031UcYUt2+wPD21tOwu/AzFB2I2PzzoC3R1jsNJjn5YV3v1q0g2CXcMYAzcsCyH00RbpFPFAiqjcw==}
+  '@iconify-json/simple-icons@1.1.102':
+    resolution: {integrity: sha512-ErRQGs7tjGsq4sj5SSeYwBOQ766yd9LtWblWakyL+ugg1k48ImabkI3mptDN5o+XSUb9SC+b7YNSStlrrecqNQ==}
 
   '@iconify/collections@1.0.415':
     resolution: {integrity: sha512-QtTK7kvL6tJKlA7qKWHohf9nZiy7SBy6ZUiAdOrsS/3AfRTMLhlh0SOfoTeVTAq/uHowOHrrmOmklxpR3YQwCA==}
@@ -5269,7 +5269,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/simple-icons@1.1.101':
+  '@iconify-json/simple-icons@1.1.102':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -9995,7 +9995,7 @@ snapshots:
 
   unconfig@0.3.13:
     dependencies:
-      '@antfu/utils': 0.7.7
+      '@antfu/utils': 0.7.8
       defu: 6.1.4
       jiti: 1.21.0
 
