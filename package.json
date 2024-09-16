@@ -36,7 +36,7 @@
     "@nuxt/ui": "^2.16.0",
     "@vueuse/components": "^10.10.0",
     "@vueuse/core": "^10.10.0",
-    "@vueuse/nuxt": "^10.10.0",
+    "@vueuse/nuxt": "^11.1.0",
     "three": "^0.165.0"
   }
 }
