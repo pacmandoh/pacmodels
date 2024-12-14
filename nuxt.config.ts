@@ -9,29 +9,37 @@ export default defineNuxtConfig({
       }
     }
   },
+
   devtools: { enabled: false },
+
   modules: [
     '@vueuse/nuxt',
     '@nuxt/ui',
     '@nuxt/eslint'
   ],
+
   colorMode: {
     preference: 'light',
     fallback: 'light'
   },
+
   ui: {
     icons: ['heroicons', 'simple-icons', 'ph', 'cbi', 'carbon']
   },
+
   runtimeConfig: {
     public: {
       version: pkg.version
     }
   },
+
   eslint: {
     config: {
       stylistic: {
         commaDangle: 'never'
       }
     }
-  }
+  },
+
+  compatibilityDate: '2024-12-13'
 })
