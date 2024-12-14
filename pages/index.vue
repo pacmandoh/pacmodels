@@ -158,7 +158,7 @@ const toggleColorMode = () => {
     ? 'dark'
     : 'light'
 }
-const BASE = 'https://imgbucket-1318471229.cos.ap-beijing.myqcloud.com/model/'
+const BASE = 'https://assets.pacdocs.cn/model/'
 const MODEL = selectedModel.cosModelName
 const resTracker = new ResourceTracker()
 const track = resTracker.track.bind(resTracker)
