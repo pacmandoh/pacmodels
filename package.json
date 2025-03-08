@@ -22,7 +22,7 @@
     "@iconify-json/ph": "^1.2.1",
     "@iconify-json/simple-icons": "^1.2.15",
     "@nuxt/devtools": "^1.6.4",
-    "@nuxt/eslint": "^0.7.3",
+    "@nuxt/eslint": "^1.2.0",
     "@types/three": "^0.170.0",
     "eslint": "^9.16.0",
     "bumpp": "^9.9.1",
